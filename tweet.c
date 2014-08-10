@@ -24,6 +24,7 @@ Authorization: OAuth oauth_consumer_key="PuwsYiFuQyGsEJZ9hHofGQtW3", oauth_nonce
 */
 
 char *response;
+char buf[1000];
 
 /* Callback to change return value to string to be parsed. */
 void callback(void *buffer, size_t size, size_t nmemb, void *userp) {
@@ -31,12 +32,9 @@ void callback(void *buffer, size_t size, size_t nmemb, void *userp) {
 }
 
 char* headers() {
-    char *auth = "Authorization: OAuth oauth_consumer_key=\"PuwsYiFuQyGsEJZ9hHofGQtW3\", oauth_nonce=\"8a127998f9b4b47f15e90868d88a364d\", oauth_signature=\"NizxGYiGC6iRvFQTCGXHBIMvvGM%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1111111111\", oauth_token=\"620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2\"";
 
-char buf[strlen(auth)+ 1000];
+    sprintf(buf, "Authorization: OAuth oauth_consumer_key=\"%s\", oauth_nonce=\"%s\", oauth_signature=\"%s\", oauth_signature_method=\"%s\", oauth_timestamp=\"%i\", oauth_token=\"%s\"", oauth_consumer_key, oauth_nonce, oauth_signature, oauth_signature_method, (unsigned)time(NULL), oauth_token);
 
-    sprintf(buf, "Authorization: OAuth oauth_consumer_key=\"PuwsYiFuQyGsEJZ9hHofGQtW3\", oauth_nonce=\"8a127998f9b4b47f15e90868d88a364d\", oauth_signature=\"NizxGYiGC6iRvFQTCGXHBIMvvGM%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"%lu\", oauth_token=\"620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2\"", 1234123412);
-printf("%s", buf);
     return buf;
 }
 
@@ -52,7 +50,7 @@ int main (int argc, char **argv) {
 
     if(curl) {
         /* POST URL */
-        curl_easy_setopt(curl, CURLOPT_URL, "http://api.twitter.com/1.1/statuses/mentions_timeline.json");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://api.twitter.com/1.1/statuses/user_timeline.json");
 
         /* POST form */
         //curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
