@@ -1,4 +1,4 @@
 twittercli
 ==========
 
-Twitter client for the command line
+Command line Twitter client built with libcurl, liboauth, and json-c

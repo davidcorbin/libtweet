@@ -36,7 +36,7 @@ show_args() {
 
 /* Show home feed */
 void homefeed() {
-
+	url = home_feed_url;
 }
 
 /* Parse the arguments */
@@ -52,8 +52,13 @@ parse_args(int argc, char **argv) {
 		show_args();
 	}
 	
-	else if (strcmp(argv[1], "home") == 0) {
+	else if (strcmp(argv[1], "feed") == 0) {
 		homefeed();
+	}
+	
+	/* No correct args */
+	else {
+		show_args();
 	}
 	
 	for (int i = 1; i < argc-1; i++) {
@@ -68,19 +73,15 @@ parse_args(int argc, char **argv) {
 int 
 main(int argc, char **argv)
 {
-	parse_args(argc, argv);
-
 	chunk.memory = malloc(1); // Will be reallocated
 	chunk.size = 0; // Nothing currently
-
-	char *url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
+	curl_global_init(CURL_GLOBAL_ALL);
+		/* Init CURL */
+	curl = curl_easy_init();
+	
+	parse_args(argc, argv);
 
 	char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", consumer_key, consumer_secret, user_token, user_secret);
-
-	curl_global_init(CURL_GLOBAL_ALL);
-
-	/* Init CURL */
-	curl = curl_easy_init();
 
 	/* Use the OAuth signed URL */
 	curl_easy_setopt(curl, CURLOPT_URL, signedurl);

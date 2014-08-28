@@ -14,3 +14,5 @@ CURLcode res;
 struct Memory chunk;
 
 bool peerverify = true;
+char *url;
+char *home_feed_url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
