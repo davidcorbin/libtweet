@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <oauth.h>
 #include <curl/curl.h>
@@ -54,6 +55,13 @@ parse_args(int argc, char **argv) {
 	else if (strcmp(argv[1], "home") == 0) {
 		homefeed();
 	}
+	
+	for (int i = 1; i < argc-1; i++) {
+		/* Disable peer verification */
+		if (strcmp(argv[i], "--no-verify-peer")) {
+			peerverify = false;
+		}
+	}
 }
 
 
@@ -77,7 +85,8 @@ main(int argc, char **argv)
 	/* Use the OAuth signed URL */
 	curl_easy_setopt(curl, CURLOPT_URL, signedurl);
 
-	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+	if (!peerverify) 
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
 	/* Add response to memory */
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);

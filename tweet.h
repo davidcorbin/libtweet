@@ -12,3 +12,5 @@ CURL *curl;
 CURLcode res;
 
 struct Memory chunk;
+
+bool peerverify = true;
