@@ -1,81 +1,88 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <time.h>
-#include <sys/stat.h>
+#include <oauth.h>
 #include <curl/curl.h>
 
-CURL *curl;
-CURLcode res;
+#include "tweet.h"
 
-char *oauth_consumer_key = "PuwsYiFuQyGsEJZ9hHofGQtW3";
-char *oauth_nonce = "8a127998f9b4b47f15e90868d88a364d";
-char *oauth_signature = "NizxGYiGC6iRvFQTCGXHBIMvvGM%3D";
-char *oauth_signature_method = "HMAC-SHA1";
-char *oauth_timestamp = "1407636076";
-char *oauth_token = "620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2";
-char *oauth_version="1.0";
+static size_t
+WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+  size_t realsize = size * nmemb;
+  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
 
-/*
-
-Authorization: OAuth oauth_consumer_key="PuwsYiFuQyGsEJZ9hHofGQtW3", oauth_nonce="8a127998f9b4b47f15e90868d88a364d", oauth_signature="NizxGYiGC6iRvFQTCGXHBIMvvGM%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1407636076", oauth_token="620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2
-
-*/
-
-char *response;
-char buf[1000];
-
-/* Callback to change return value to string to be parsed. */
-void callback(void *buffer, size_t size, size_t nmemb, void *userp) {
-    response = buffer;
-}
-
-char* headers() {
-
-    sprintf(buf, "Authorization: OAuth oauth_consumer_key=\"%s\", oauth_nonce=\"%s\", oauth_signature=\"%s\", oauth_signature_method=\"%s\", oauth_timestamp=\"%i\", oauth_token=\"%s\"", oauth_consumer_key, oauth_nonce, oauth_signature, oauth_signature_method, (unsigned)time(NULL), oauth_token);
-
-    return buf;
-}
-
-int main (int argc, char **argv) {
-
-    struct curl_slist *chunk = NULL;
- 
-    chunk = curl_slist_append(chunk, headers());
-
-    curl_global_init(CURL_GLOBAL_ALL);
-
-    curl = curl_easy_init();
-
-    if(curl) {
-        /* POST URL */
-        curl_easy_setopt(curl, CURLOPT_URL, "http://api.twitter.com/1.1/statuses/user_timeline.json");
-
-        /* POST form */
-        //curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-
-        /* Make return data a buffer */
-        //curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
-
-        /* passing the pointer to the response as the callback parameter */
-        //curl_easy_setopt(curl, CURLOPT_WRITEDATA, &res);
-
-curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-    res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-
-        /* Perform the request */
-        res = curl_easy_perform(curl);
-
-//printf("%s", response);
-
-        /* Check for errors */
-        if(res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-
-        curl_easy_cleanup(curl);
-    }
-    curl_slist_free_all(chunk);
+  mem->memory = realloc(mem->memory, mem->size + realsize + 1);
+  if(mem->memory == NULL) {
+    /* out of memory! */
+    printf("not enough memory (realloc returned NULL)\n");
     return 0;
+  }
+
+  memcpy(&(mem->memory[mem->size]), contents, realsize);
+  mem->size += realsize;
+  mem->memory[mem->size] = 0;
+
+  return realsize;
+}
+
+
+int main(void)
+{
+  CURL *curl_handle;
+  CURLcode res;
+
+  struct MemoryStruct chunk;
+
+  chunk.memory = malloc(1); // Will be reallocated
+  chunk.size = 0; // Nothing currently
+
+char *url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
+
+char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", consumer_key, consumer_secret, user_token, user_secret);
+
+
+  curl_global_init(CURL_GLOBAL_ALL);
+
+  /* init the curl session */
+  curl_handle = curl_easy_init();
+
+  /* specify URL to get */
+  curl_easy_setopt(curl_handle, CURLOPT_URL, signedurl);
+
+curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+
+  /* send all data to this function  */
+  curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+
+  /* we pass our 'chunk' struct to the callback function */
+  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+
+  /* some servers don't like requests that are made without a user-agent
+     field, so we provide one */
+  curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "twittercli");
+
+  /* get it! */
+  res = curl_easy_perform(curl_handle);
+
+  /* check for errors */
+  if(res != CURLE_OK) {
+    fprintf(stderr, "curl_easy_perform() failed: %s\n",
+            curl_easy_strerror(res));
+  }
+  else {
+
+printf("%s", chunk.memory);
+  }
+
+  /* cleanup curl stuff */
+  curl_easy_cleanup(curl_handle);
+
+  if(chunk.memory)
+    free(chunk.memory);
+
+  /* we're done with libcurl, so clean it up */
+  curl_global_cleanup();
+
+  return 0;
 }
