@@ -8,11 +8,8 @@ struct Memory {
 	size_t size;
 };
 
-CURL *curl;
-CURLcode res;
-
 struct Memory chunk;
 
 bool peerverify = true;
-char *url;
+char *tweet_url = "https://api.twitter.com/1.1/statuses/update.json";
 char *home_feed_url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
