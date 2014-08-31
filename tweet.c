@@ -93,6 +93,7 @@ homefeed() {
  char *request(char *http_method, char *url, char *url_enc_args)
  {
 CURL *curl;
+CURLcode res;
   struct curl_slist * slist = NULL;
   char * ser_url, **argv, *auth_params, auth_header[1024], *non_auth_params, *final_url, *temp_url;
   int argc;
@@ -130,13 +131,15 @@ char *postdata;
 */
   free(argv);
 
-
+printf("%s - URL\n", url);
+curl = curl_easy_init();
+  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
   curl_easy_setopt(curl, CURLOPT_URL, url);
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
   curl_easy_setopt(curl, CURLOPT_POST, 1);
   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata);
 
- int curlstatus = curl_easy_perform(curl); /* Execute the request! */
+res = curl_easy_perform(curl);
 
  curl_easy_cleanup(curl);
 }
@@ -238,8 +241,10 @@ parse_args(int argc, char **argv) {
 	}
 
 	else if (strcmp(argv[1], "post") == 0) {
+		printf("Request called\n");
 		request("POST", tweet_url, oauth_url_escape("status=aaa"));
 //printf("%s\n", resp);
+		printf("Request finished\n");
 	}
 	
 	/* No correct args */
