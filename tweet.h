@@ -1,3 +1,14 @@
+/*
+ *
+ * Copyright (c) 2014 David Corbin.
+ *
+ * This library is free software; 
+ * you can redistribute it and/or modify
+ * it under the terms of the MIT license. 
+ * See COPYING for details.
+ *
+ */
+
 char *consumer_key = "PuwsYiFuQyGsEJZ9hHofGQtW3";
 char *consumer_secret = "9OqFOSLP6W93jACsChkEfi3PYp4XLlBjI6Ry5COCnyO6DWnGhR";
 char *user_token = "620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2";
