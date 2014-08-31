@@ -4,7 +4,6 @@
 #include <string.h>
 #include <oauth.h>
 #include <curl/curl.h>
-
 #include <json/json.h>
 
 #include "tweet.h"
@@ -90,27 +89,30 @@ homefeed() {
 
 
 
- char *request(char *http_method, char *url, char *url_enc_args)
- {
-CURL *curl;
-CURLcode res;
-  struct curl_slist * slist = NULL;
-  char * ser_url, **argv, *auth_params, auth_header[1024], *non_auth_params, *final_url, *temp_url;
-  int argc;
+char *
+request(char *http_method, char *url, char *url_enc_args)
+{
+	CURL *curl;
+	CURLcode res;
+	struct curl_slist * slist = NULL;
+	char * ser_url, **argv, *auth_params, auth_header[1024], 
+*non_auth_params, *final_url, *temp_url;
+	int argc;
 
-char *postdata;
+	char *postdata;
 
-  ser_url = (char *) malloc(strlen(url) + strlen(url_enc_args) + 2);
-  sprintf(ser_url, "%s?%s", url, url_enc_args);
+	ser_url = (char *) malloc(strlen(url) + strlen(url_enc_args) + 2);
+	sprintf(ser_url, "%s?%s", url, url_enc_args);
 
-  argv = malloc(0);
-  argc = oauth_split_url_parameters(ser_url, &argv);
-  free(ser_url);
+	argv = malloc(0);
+	argc = oauth_split_url_parameters(ser_url, &argv);
+	free(ser_url);
 
-  temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, http_method, consumer_key, consumer_secret, user_token, user_secret);
-  free(temp_url);
+	temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, 
+http_method, consumer_key, consumer_secret, user_token, user_secret);
+	free(temp_url);
 
-  auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);
+	auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);
   sprintf( auth_header, "Authorization: OAuth %s", auth_params );
   slist = curl_slist_append(slist, auth_header);
   free(auth_params);
@@ -123,15 +125,13 @@ char *postdata;
 
   postdata = non_auth_params;
 
-/*
   for (int i = 0; i < argc; i++ )
   {
     free(argv[i]);   
   }
-*/
+
   free(argv);
 
-printf("%s - URL\n", url);
 curl = curl_easy_init();
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
   curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -144,113 +144,10 @@ res = curl_easy_perform(curl);
  curl_easy_cleanup(curl);
 }
 
-
-
-
-/* Post new tweet */
-void 
-post() {
-	CURL *curl;
-	CURLcode res;
-
-	chunk.memory = malloc(1); // Will be reallocated
-	chunk.size = 0; // Nothing currently
-
-	/* Init CURL */
-	curl = curl_easy_init();
-
-char *status = oauth_url_escape("status=Test tweet");
-
-	char *signedurl = oauth_sign_url2(tweet_url, NULL, OA_HMAC, "POST", consumer_key, consumer_secret, user_token, user_secret);
-
-printf("%s\n\n", signedurl);
-
-printf("%s\n\n", status);
-
-char *asdf = malloc(100 * sizeof(char));
-asdf = strcat(signedurl, "&");
-char *asdfg = malloc(150 * sizeof(char));
-asdfg = strcat(asdf, status);
-
-printf("%s\n", asdfg);
-
-	/* Use the OAuth signed URL */
-	curl_easy_setopt(curl, CURLOPT_URL, asdfg);
-
-//free(asdf);
-//free(asdfg);
-
-	curl_easy_setopt(curl, CURLOPT_POST, 1L);
-
-	//curl_easy_setopt(curl, CURLOPT_POSTFIELDS, status);
-
-	if (!peerverify) 
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-
-	/* Add response to memory */
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-	/* Give chunk to callback */
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-
-	/* Execute curl */
-	res = curl_easy_perform(curl);
-
-	/* Show Error */
-	if(res != CURLE_OK) {
-		fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
-		exit(2);
-	}
-	else {
-		json_object *jobj = json_tokener_parse(chunk.memory);
-		//json_parse(jobj);
-		printf("%s\n", chunk.memory);
-		printf("Done\n");
-	}
-
-	/* Don't leave a mess */
-	curl_easy_cleanup(curl);
-
-	/* Free allocated memory */
-	if(chunk.memory)
-		free(chunk.memory);
-}
-
 /* Parse the arguments */
 void 
 parse_args(int argc, char **argv) {
-	/* Only one argument */
-	if (argc == 1) {
-		show_args();
-	}
 
-	for (int i = 1; i < argc-1; i++) {
-		/* Disable peer verification */
-		if (strcmp(argv[i], "--no-verify-peer")) {
-			peerverify = false;
-		}
-	}
-	
-	/* If help menu */
-	if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
-		show_args();
-	}
-	
-	else if (strcmp(argv[1], "feed") == 0) {
-		homefeed();
-	}
-
-	else if (strcmp(argv[1], "post") == 0) {
-		printf("Request called\n");
-		request("POST", tweet_url, oauth_url_escape("status=aaa"));
-//printf("%s\n", resp);
-		printf("Request finished\n");
-	}
-	
-	/* No correct args */
-	else {
-		show_args();
-	}
 }
 
 
@@ -283,7 +180,47 @@ main(int argc, char **argv)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 	
-	parse_args(argc, argv);
+	/* No arguments */
+	if (argc == 1) {
+		show_args();
+	}
+
+	for (int i = 1; i < argc-1; i++) {
+		/* Disable peer verification */
+		if (strcmp(argv[i], "--no-verify-peer")) {
+			peerverify = false;
+		}
+
+		/* Print verbosely */
+		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "verbose") == 0 || strcmp(argv[i], "--verbose") == 0) {
+			verbose = true;
+printf("verbose\n\n");
+		}
+	}
+	
+	/* If help menu */
+	if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
+		show_args();
+	}
+	
+	else if (strcmp(argv[1], "feed") == 0) {
+		homefeed();
+	}
+
+	else if (strcmp(argv[1], "post") == 0) {
+		request("POST", tweet_url, oauth_url_escape("status=aaa"));
+	}
+	
+	/* No correct args */
+	else {
+		char *status_string = malloc(7 + strlen(argv[1]) + 1);
+		char *s = "status=";
+
+		strcpy(status_string, s);
+		strcat(status_string, argv[1]);
+		request("POST", tweet_url, oauth_url_escape(status_string));
+		free(status_string);
+	}
 
 	/* Done */
 	curl_global_cleanup();

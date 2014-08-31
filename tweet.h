@@ -11,5 +11,7 @@ struct Memory {
 struct Memory chunk;
 
 bool peerverify = true;
+bool verbose = false;
+
 char *tweet_url = "https://api.twitter.com/1.1/statuses/update.json";
 char *home_feed_url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
