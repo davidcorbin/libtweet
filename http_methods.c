@@ -37,6 +37,7 @@
 #include <json/json.h>
 #endif
 
+#include "error_desc.h"
 #include "http_methods.h"
 
 char *consumer_key = "PuwsYiFuQyGsEJZ9hHofGQtW3";
@@ -99,6 +100,7 @@ struct Memory chunk;
         /* Show Error */
         if(res != CURLE_OK) {
                 fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
+                error_desc((int)res);
                 exit(2);
         }
 
@@ -175,6 +177,7 @@ struct Memory chunk;
 
         if (res != CURLE_OK) {
                 fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
+                error_desc((int)res);
                 exit(2);
         }
 
