@@ -1,8 +1,8 @@
 SHELL = /bin/sh
 TARGET = tweet
 CC = gcc
-CFLAGS = -Wall -lcurl -std=c99 -loauth -ljson -g
-OBJECTS = tweet.c
+CFLAGS = -Wall -Wextra -g -lcurl -std=c99 -loauth -ljson
+OBJECTS = tweet.c http_methods.c
 PREFIXDIR = $(DESTDIR)/usr
 BINDIR = $(PREFIXDIR)/bin
 

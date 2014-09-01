@@ -18,26 +18,7 @@
 #include <json/json.h>
 
 #include "tweet.h"
-
-
-/* CURL response callback */
-static size_t
-WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-	size_t realsize = size * nmemb;
-	struct Memory *mem = (struct Memory *)userp;
-
-	mem->memory = realloc(mem->memory, mem->size + realsize + 1);
-	if(mem->memory == NULL) {
-		printf("Error allocating memory\n");
-		return 0;
-	}
-	memcpy(&(mem->memory[mem->size]), contents, realsize);
-	mem->size += realsize;
-	mem->memory[mem->size] = 0;
-
-	return realsize;
-}
+#include "http_methods.h"
 
 /* Show command arguments */
 void 
@@ -45,119 +26,6 @@ show_args()
 {
 	printf("These are the arguments\n");
 	exit(1);
-}
-
-/* Show home feed */
-void 
-get() 
-{
-
-	CURL *curl;
-	CURLcode res;
-
-	chunk.memory = malloc(1); // Will be reallocated
-	chunk.size = 0; // Nothing currently
-
-	/* Init CURL */
-	curl = curl_easy_init();
-
-	char *signedurl = oauth_sign_url2(home_feed_url, NULL, OA_HMAC, "GET", consumer_key, consumer_secret, user_token, user_secret);
-
-	/* Use the OAuth signed URL */
-	curl_easy_setopt(curl, CURLOPT_URL, signedurl);
-
-	if (!peerverify) 
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-
-	/* Add response to memory */
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-	/* Give chunk to callback */
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-
-	/* Execute curl */
-	res = curl_easy_perform(curl);
-
-	/* Show Error */
-	if(res != CURLE_OK) {
-		fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
-		exit(2);
-	}
-
-	/* Don't leave a mess */
-	curl_easy_cleanup(curl);
-
-}
-
-
-
-
-
-void
-post(char *url, char *url_enc_args)
-{
-	CURL *curl;
-	CURLcode res;
-	struct curl_slist * slist = NULL;
-	char * ser_url, **argv, *auth_params, auth_header[1024], 
-*non_auth_params, *final_url, *temp_url, *postdata;
-	int argc;
-
-	chunk.memory = malloc(1); // Will be reallocated
-	chunk.size = 0; // Nothing currently
-
-	ser_url = (char *) malloc(strlen(url) + strlen(url_enc_args) + 2);
-	sprintf(ser_url, "%s?%s", url, url_enc_args);
-
-	argv = malloc(0);
-	argc = oauth_split_url_parameters(ser_url, &argv);
-	free(ser_url);
-
-	temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, 
-"POST", consumer_key, consumer_secret, user_token, user_secret);
-	free(temp_url);
-
-	auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);
-	sprintf( auth_header, "Authorization: OAuth %s", auth_params );
-	slist = curl_slist_append(slist, auth_header);
-	free(auth_params);
-
-	non_auth_params = oauth_serialize_url_sep(argc, 1, argv, "", 1 );
-
-	final_url = (char *) malloc( strlen(url) + strlen(non_auth_params) );
-
-	strcpy(final_url, url);
-
-	postdata = non_auth_params;
-
-	for (int i = 0; i < argc; i++) {
-		free(argv[i]);	 
-	}
-
-	free(argv);
-
-	curl = curl_easy_init();
-	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
-	curl_easy_setopt(curl, CURLOPT_POST, 1);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata);
-
-	/* Add response to memory */
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-	/* Give chunk to callback */
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-
-	res = curl_easy_perform(curl);
-
-	if (res != CURLE_OK) {
-		fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
-		exit(2);
-	}
-
-	curl_easy_cleanup(curl);
-
 }
 
 
@@ -189,6 +57,7 @@ void json_parse(json_object * jobj)
 int 
 main(int argc, char **argv)
 {
+struct Memory chunk;
 	curl_global_init(CURL_GLOBAL_ALL);
 	
 	/* No arguments */
@@ -200,6 +69,9 @@ main(int argc, char **argv)
 		/* Disable peer verification */
 		if (strcmp(argv[i], "--no-verify-peer")) {
 			peerverify = false;
+		}
+		else {
+			peerverify = true;
 		}
 
 		/* Print verbosely */
@@ -214,7 +86,9 @@ main(int argc, char **argv)
 	}
 	
 	else if (strcmp(argv[1], "feed") == 0) {
-		get();
+		chunk = get(home_feed_url);
+
+printf("%s\n", chunk.memory);
 	}
 	
 	/* No correct args */
@@ -224,7 +98,7 @@ main(int argc, char **argv)
 
 		strcpy(status_string, s);
 		strcat(status_string, argv[1]);
-		post(tweet_url, oauth_url_escape(status_string));
+		chunk = post(tweet_url, oauth_url_escape(status_string));
 		free(status_string);
 
 	}
