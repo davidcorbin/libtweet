@@ -67,11 +67,8 @@ struct Memory chunk;
 
 	for (int i = 1; i < argc; i++) {
 		/* Disable peer verification */
-		if (strcmp(argv[i], "--no-verify-peer")) {
+		if (strcmp(argv[i], "--no-verify-peer") == 0) {
 			peerverify = false;
-		}
-		else {
-			peerverify = true;
 		}
 
 		/* Print verbosely */
@@ -86,7 +83,7 @@ struct Memory chunk;
 	}
 	
 	else if (strcmp(argv[1], "feed") == 0) {
-		chunk = get(home_feed_url);
+		chunk = get(home_feed_url, peerverify);
 
 printf("%s\n", chunk.memory);
 	}
@@ -98,9 +95,10 @@ printf("%s\n", chunk.memory);
 
 		strcpy(status_string, s);
 		strcat(status_string, argv[1]);
-		chunk = post(tweet_url, oauth_url_escape(status_string));
+		chunk = post(tweet_url, oauth_url_escape(status_string), peerverify);
 		free(status_string);
 
+printf("%s\n", chunk.memory);
 	}
 
 	/* Done */

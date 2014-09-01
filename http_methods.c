@@ -1,3 +1,14 @@
+/*
+ *
+ * Copyright (c) 2014 David Corbin.
+ *
+ * This library is free software; 
+ * you can redistribute it and/or modify
+ * it under the terms of the MIT license. 
+ * See COPYING for details.
+ *
+ */
+
 #ifndef _STDIO_H_
 #include <stdio.h>
 #endif
@@ -54,7 +65,7 @@ write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)
 
 /* Show home feed */
 struct Memory 
-get(char *url) 
+get(char *url, bool peerverify) 
 {
 
         CURL *curl;
@@ -99,7 +110,7 @@ return chunk;
 
 
 struct Memory
-post(char *url, char *url_enc_args)
+post(char *url, char *url_enc_args, bool peerverify)
 {
         CURL *curl;
         CURLcode res;
@@ -146,7 +157,7 @@ struct Memory chunk;
 
         curl = curl_easy_init();
 
-        if (!peerverify) 
+        if (peerverify == false) 
                 curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
         curl_easy_setopt(curl, CURLOPT_URL, url);
