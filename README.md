@@ -2,13 +2,13 @@ twittercli
 ==========
 As simple as `tweet "#twittercli is awesome!"`
 
-Command line Twitter client built with libcurl, liboauth, and json-c
+Command line Twitter client built with libcurl, liboauth, and libjson
 
 
 Install
 ==========
 - Create an app and generate consumer/application keys at apps.twitter.com
-- Install libcurl, liboauth, json-c
+- Install libcurl, liboauth, libjson
 - Run `make`
 - Run `make install`
 
