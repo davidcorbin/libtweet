@@ -7,7 +7,7 @@
  * it under the terms of the MIT license. 
  * See COPYING for details.
  *
- */
+ */ 
 
 bool verbose = false;
 bool peerverify = true;

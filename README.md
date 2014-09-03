@@ -1,6 +1,7 @@
 twittercli
-As simple as `tweet "#twittercli is awesome!"`
 ==========
+As simple as `tweet "#twittercli is awesome!"`
+
 Command line Twitter client built with libcurl, liboauth, and json-c
 
 
