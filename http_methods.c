@@ -25,20 +25,13 @@
 #include <string.h>
 #endif
 
-#ifndef _OAUTH_H
-#include <oauth.h>
-#endif
-
 #ifndef __CURL_CURL_H
 #include <curl/curl.h>
 #endif
 
-#ifndef _json_h_
-#include <json/json.h>
-#endif
-
 #include "error_desc.h"
 #include "http_methods.h"
+#include "oauth.h"
 
 /* OAuth Keys */
 char *consumer_key = "PuwsYiFuQyGsEJZ9hHofGQtW3";
