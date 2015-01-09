@@ -1,12 +1,15 @@
 /** \enum OAuthMethod
  * signature method to used for signing the request.
  */
+ 
+#ifndef OAUTH_METHOD
+#define OAUTH_METHOD
 typedef enum {
     OA_HMAC=0, ///< use HMAC-SHA1 request signing method
     OA_RSA, ///< use RSA signature
     OA_PLAINTEXT ///< use plain text signature (for testing only)
-  } OAuthMethod;
-
+ } OAuthMethod;
+#endif
 
 
 /**
@@ -331,3 +334,26 @@ char *oauth_body_hash_encode(size_t len, unsigned char *digest);
  * @return encoded string otherwise NULL
  */
 char *oauth_encode_base64(int size, const unsigned char *src);
+
+/**
+ * Base64 encode one byte
+ */
+char oauth_b64_encode(unsigned char u);
+
+/**
+ * Decode a single base64 character.
+ */
+unsigned char oauth_b64_decode(char c);
+
+/**
+ * Return TRUE if 'c' is a valid base64 character, otherwise FALSE
+ */
+int oauth_b64_is_base64(char c);
+
+/**
+ * string compare function for oauth parameters.
+ *
+ * used with qsort. needed to normalize request parameters.
+ * see http://oauth.net/core/1.0/#anchor14
+ */
+int oauth_cmpstringp(const void *p1, const void *p2);

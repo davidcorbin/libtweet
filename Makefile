@@ -3,7 +3,7 @@ TARGET = tweet
 CC = gcc
 # -Wall -Wextra
 CFLAGS = -g -lcurl -std=c99
-OBJECTS = tweet.c http_methods.c error_desc.c oauth.c xmalloc.c
+OBJECTS = tweet.c http_methods.c error_desc.c oauth.c xmalloc.c hash.c
 PREFIXDIR = $(DESTDIR)/usr
 BINDIR = $(PREFIXDIR)/bin
 

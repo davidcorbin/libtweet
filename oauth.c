@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <strings.h>
 #include <string.h>
 #include <ctype.h>
@@ -10,7 +11,11 @@
 
 #include "oauth.h"
 #include "xmalloc.h"
-#include "hash.c"
+#include "hash.h"
+
+#ifndef ISXDIGIT
+# define ISXDIGIT(x) (isxdigit((int) ((unsigned char)x)))
+#endif
 
 char *oauth_sign_url2 (const char *url, char **postargs,
 		OAuthMethod method,
@@ -128,46 +133,51 @@ int oauth_split_url_parameters(const char *url, char ***argv) {
 
 
 
-
-
-char *oauth_sign_array2 (int *argcp, char***argvp,
-		char **postargs,
-		OAuthMethod method,
-		const char *http_method, //< HTTP request method
-		const char *c_key, //< consumer key - posted plain text
-		const char *c_secret, //< consumer secret - used as 1st part of secret-key
-		const char *t_key, //< token key - posted plain text in URL
-		const char *t_secret //< token secret - used as 2st part of secret-key
-		) {
-
-	char *result;
-	oauth_sign_array2_process(argcp, argvp, postargs, method, http_method, c_key, c_secret, t_key, t_secret);
-
-	// build URL params
-	result = oauth_serialize_url(*argcp, (postargs?1:0), *argvp);
-
-	if(postargs) {
-		*postargs = result;
-		result = xstrdup((*argvp)[0]);
-	}
-
-	return result;
-}
-
-
 /**
- * free array args
+ * string compare function for oauth parameters.
  *
- * @param argcp pointer to array length int
- * @param argvp pointer to array values to be xfree()d
+ * used with qsort. needed to normalize request parameters.
+ * see http://oauth.net/core/1.0/#anchor14
  */
-void oauth_free_array(int *argcp, char ***argvp) {
-	int i;
-	for (i=0;i<(*argcp);i++) {
-		xfree((*argvp)[i]);
+int oauth_cmpstringp(const void *p1, const void *p2) {
+	char *v1,*v2;
+	char *t1,*t2;
+	int rv;
+	if (!p1 || !p2) return 0;
+	// TODO: this is not fast - we should escape the
+	// array elements (once) before sorting.
+	v1=oauth_url_escape(* (char * const *)p1);
+	v2=oauth_url_escape(* (char * const *)p2);
+
+	// '=' signs are not "%3D" !
+	if ((t1=strstr(v1,"%3D"))) {
+		t1[0]='\0'; t1[1]='='; t1[2]='=';
 	}
-	if(*argvp) xfree(*argvp);
+	if ((t2=strstr(v2,"%3D"))) {
+		t2[0]='\0'; t2[1]='='; t2[2]='=';
+	}
+
+	// compare parameter names
+	rv=strcmp(v1,v2);
+	if (rv != 0) {
+		xfree(v1);
+		xfree(v2);
+		return rv;
+	}
+
+	// if parameter names are equal, sort by value.
+	if (t1) t1[0]='=';
+	if (t2) t2[0]='=';
+	if (t1 && t2)        rv=strcmp(t1,t2);
+	else if (!t1 && !t2) rv=0;
+	else if (!t1)        rv=-1;
+	else                 rv=1;
+
+	xfree(v1);
+	xfree(v2);
+	return rv;
 }
+
 
 
 void oauth_sign_array2_process (int *argcp, char***argvp,
@@ -255,6 +265,48 @@ void oauth_sign_array2_process (int *argcp, char***argvp,
 	xfree(sign);
 	if(query) xfree(query);
 }
+
+
+
+char *oauth_sign_array2 (int *argcp, char***argvp,
+		char **postargs,
+		OAuthMethod method,
+		const char *http_method, //< HTTP request method
+		const char *c_key, //< consumer key - posted plain text
+		const char *c_secret, //< consumer secret - used as 1st part of secret-key
+		const char *t_key, //< token key - posted plain text in URL
+		const char *t_secret //< token secret - used as 2st part of secret-key
+		) {
+
+	char *result;
+	oauth_sign_array2_process(argcp, argvp, postargs, method, http_method, c_key, c_secret, t_key, t_secret);
+
+	// build URL params
+	result = oauth_serialize_url(*argcp, (postargs?1:0), *argvp);
+
+	if(postargs) {
+		*postargs = result;
+		result = xstrdup((*argvp)[0]);
+	}
+
+	return result;
+}
+
+
+/**
+ * free array args
+ *
+ * @param argcp pointer to array length int
+ * @param argvp pointer to array values to be xfree()d
+ */
+void oauth_free_array(int *argcp, char ***argvp) {
+	int i;
+	for (i=0;i<(*argcp);i++) {
+		xfree((*argvp)[i]);
+	}
+	if(*argvp) xfree(*argvp);
+}
+
 
 /**
  * build a url query string from an array.
@@ -691,6 +743,17 @@ char *oauth_encode_base64(int size, const unsigned char *src) {
 	return out;
 }
 
+/**
+ * Base64 encode one byte
+ */
+char oauth_b64_encode(unsigned char u) {
+  if(u < 26)  return 'A'+u;
+  if(u < 52)  return 'a'+(u-26);
+  if(u < 62)  return '0'+(u-52);
+  if(u == 62) return '+';
+  return '/';
+}
+
 
 /**
  * Decode a single base64 character.
@@ -714,6 +777,8 @@ int oauth_b64_is_base64(char c) {
   }
   return 0;
 }
+
+
 
 /**
  * generate a random string between 15 and 32 chars length
