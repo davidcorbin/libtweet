@@ -8,9 +8,14 @@ PREFIXDIR = $(DESTDIR)/usr
 BINDIR = $(PREFIXDIR)/bin
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(LFLAGS) $(CFLAGS) $(OBJECTS)
-
-# -o $(TARGET) 
+	$(CC) $(CFLAGS) $(OBJECTS) $(LFLAGS) -o $(TARGET) 
+	
+	
+# ld *.o $(LFLAGS) -o $(TARGET) 
 
 install:
 	install $(TARGET) $(BINDIR)
+	
+clean:
+	rm *.o
+	rm *.gch
