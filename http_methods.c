@@ -39,6 +39,49 @@ char *consumer_secret = "9OqFOSLP6W93jACsChkEfi3PYp4XLlBjI6Ry5COCnyO6DWnGhR";
 char *user_token = "620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2";
 char *user_secret = "mNKJFF7wlI2Um1XU5Y5cpS90Iq1uV0x8Zi4HfBbCZskTz";
 
+/*** Functions for getting Twitter credentials from file ***/
+char *
+getConsumerKey() {
+/*
+	FILE *fp;
+
+	fp = fopen(strcat(tweetdir, "/consumerkey"), "w+");
+	fprintf(fp, "This is testing for fprintf...\n");
+	fclose(fp);
+	*/
+}
+char *getConsumerSecret() {
+
+}
+char * getUserToken() {
+
+}
+char * getUserSecret() {
+
+}
+
+/*** Functions for setting Twitter credentials in file ***/
+void setConsumerKey(char *key) {
+	FILE *fp;
+
+	if (fp != NULL) {
+		fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey.txt"), "w");
+		//fprintf(fp, "---");
+		fclose(fp);
+		printf("not");
+	}
+	printf("done\n");
+}
+void setConsumerSecret() {
+
+}
+void setUserToken() {
+
+}
+void setUserSecret() {
+
+}
+
 /* CURL response callback */
 static size_t
 write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)

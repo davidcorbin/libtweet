@@ -23,30 +23,26 @@
 void 
 show_args() 
 {
-	printf("These are the arguments\n");
+	printf("Arguments to 'tweet' <-- need done \n");
 	exit(1);
 }
 
 char *
 unescape(char *escaped, int len) 
 {
-char *unescaped = malloc(len * sizeof(char));
-int j = 0;
-
-int test = 0;
-
-char backslash[1] = "\\";
-for (int i = 0; i < len; i++) {
-if (escaped[i] == backslash[0]) {
-test++;
-continue;
-} else {
-unescaped[j] = escaped[i];
-j++;
-}
-}
-
-return unescaped;
+	char *unescaped = malloc(len * sizeof(char));
+	int j = 0, test = 0;
+	char backslash[1] = "\\";
+	for (int i = 0; i < len; i++) {
+		if (escaped[i] == backslash[0]) {
+			test++;
+			continue;
+		} else {
+			unescaped[j] = escaped[i];
+			j++;
+		}
+	}
+	return unescaped;
 }
 
 
@@ -56,6 +52,9 @@ main(int argc, char **argv)
 	struct Memory chunk;
 
 	curl_global_init(CURL_GLOBAL_ALL);
+	
+	//setConsumerKey("thisisakey");
+ 
 	
 	/* No arguments */
 	if (argc == 1) {
