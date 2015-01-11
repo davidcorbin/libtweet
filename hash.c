@@ -32,6 +32,7 @@
 #include "oauth.h" // oauth_encode_base64
 #include "xmalloc.h"
 
+
 #include "sha1.c" // TODO: sha1.h ; Makefile.am: add sha1.c
 
 /* API */
@@ -145,6 +146,7 @@ char *oauth_strip_pkcs(const char *txt, const char *h, const char *t) {
 char *oauth_sign_hmac_sha1 (const char *m, const char *k) {
 	return(oauth_sign_hmac_sha1_raw (m, strlen(m), k, strlen(k)));
 }
+
 
 char *oauth_sign_hmac_sha1_raw (const char *m, const size_t ml, const char *k, const size_t kl) {
 	PK11SlotInfo  *slot = NULL;

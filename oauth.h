@@ -357,3 +357,40 @@ int oauth_b64_is_base64(char c);
  * see http://oauth.net/core/1.0/#anchor14
  */
 int oauth_cmpstringp(const void *p1, const void *p2);
+
+/**
+ * same as \ref oauth_sign_hmac_sha1 but allows one
+ * to specify length of message and key (in case they contain null chars).
+ *
+ * @param m message to be signed
+ * @param ml length of message
+ * @param k key used for signing
+ * @param kl length of key
+ * @return signature string.
+ */
+char *oauth_sign_hmac_sha1_raw (const char *m, const size_t ml, const char *k, const size_t kl);
+
+
+/**
+ * returns RSA-SHA1 signature for given data.
+ * the returned signature needs to be freed by the caller.
+ *
+ * @param m message to be signed
+ * @param k private-key PKCS and Base64-encoded
+ * @return base64 encoded signature string.
+ */
+char *oauth_sign_rsa_sha1 (const char *m, const char *k);
+
+
+/**
+ * returns base64 encoded HMAC-SHA1 signature for
+ * given message and key.
+ * both data and key need to be urlencoded.
+ *
+ * the returned string needs to be freed by the caller
+ *
+ * @param m message to be signed
+ * @param k key used for signing
+ * @return signature string.
+ */
+char *oauth_sign_hmac_sha1 (const char *m, const char *k);

@@ -11,7 +11,6 @@
 
 #include "oauth.h"
 #include "xmalloc.h"
-#include "hash.h"
 
 #ifndef ISXDIGIT
 # define ISXDIGIT(x) (isxdigit((int) ((unsigned char)x)))
@@ -398,7 +397,7 @@ char *oauth_serialize_url_sep (int argc, int start, char **argv, char *sep, int 
 		xfree(tmp);
 	}
 	return (query);
-
+}
 
 /**
  * Parse RFC3986 encoded 'string' back to  unescaped version.
