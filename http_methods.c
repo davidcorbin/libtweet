@@ -33,53 +33,108 @@
 #include "http_methods.h"
 #include "oauth.h"
 
-/* OAuth Keys */
-char *consumer_key = "PuwsYiFuQyGsEJZ9hHofGQtW3";
-char *consumer_secret = "9OqFOSLP6W93jACsChkEfi3PYp4XLlBjI6Ry5COCnyO6DWnGhR";
-char *user_token = "620331547-x2XviwVplG1rawauTMgOKq4Mew4MyddEbGDCXnQ2";
-char *user_secret = "mNKJFF7wlI2Um1XU5Y5cpS90Iq1uV0x8Zi4HfBbCZskTz";
-
 /*** Functions for getting Twitter credentials from file ***/
 char *
 getConsumerKey() {
-/*
-	FILE *fp;
-
-	fp = fopen(strcat(tweetdir, "/consumerkey"), "w+");
-	fprintf(fp, "This is testing for fprintf...\n");
-	fclose(fp);
-	*/
+        char *buff;
+	FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey"), "r");
+	if (fp == NULL) {
+	 	perror("Read Error:");
+	}
+        else {
+	        fscanf(fp, "%s", buff);
+	        printf("%s\n", buff);
+	        fclose(fp);
+        }
+	return buff;
 }
-char *getConsumerSecret() {
-
+char *
+getConsumerSecret() {
+        char *buff;
+        FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumersecret"), "r");
+        if (fp == NULL) {
+                perror("Read Error:");
+        }
+        else {
+                fscanf(fp, "%s", buff);
+                printf("%s\n", buff);
+                fclose(fp);
+        }
+        return buff;
 }
-char * getUserToken() {
-
+char *
+getUserToken() {
+        char *buff;
+        FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usertoken"), "r");
+        if (fp == NULL) {
+                perror("Read Error:");
+        }
+        else {
+                fscanf(fp, "%s", buff);
+                printf("%s\n", buff);
+                fclose(fp);
+        }
+        return buff;
 }
-char * getUserSecret() {
-
+char *
+getUserSecret() {
+        char *buff;
+        FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usersecret"), "r");
+        if (fp == NULL) {
+                perror("Read Error:");
+        }
+        else {
+                fscanf(fp, "%s", buff);
+                printf("%s\n", buff);
+                fclose(fp);
+        }
+        return buff;
 }
 
 /*** Functions for setting Twitter credentials in file ***/
-void setConsumerKey(char *key) {
-	FILE *fp;
-
-	if (fp != NULL) {
-		fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey.txt"), "w");
-		//fprintf(fp, "---");
-		fclose(fp);
-		printf("not");
+void 
+setConsumerKey(char *key) {
+	FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey"), "w");
+	if (fp == NULL) {
+		perror("Write Error:");
 	}
-	printf("done\n");
+	else {
+		fputs(key, fp);
+		fclose(fp);
+	}
 }
-void setConsumerSecret() {
-
+void 
+setConsumerSecret(char *key) {
+        FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumersecret"), "w");
+        if (fp == NULL) {
+                perror("Write Error:");
+        }
+        else {
+                fputs(key, fp);
+                fclose(fp);
+        }
 }
-void setUserToken() {
-
+void 
+setUserToken(char *key) {
+        FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usertoken"), "w");
+	if (fp == NULL) {
+                perror("Write Error:");
+        }
+        else {
+                fputs(key, fp);
+                fclose(fp);
+        }
 }
-void setUserSecret() {
-
+void 
+setUserSecret(char *key) {
+        FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usersecret"), "w");
+	if (fp == NULL) {
+                perror("Write Error:");
+	}
+        else {
+                fputs(key, fp);
+                fclose(fp);
+        }
 }
 
 /* CURL response callback */
@@ -117,7 +172,7 @@ struct Memory chunk;
         /* Init CURL */
         curl = curl_easy_init();
 
-        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", consumer_key, consumer_secret, user_token, user_secret);
+        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", getConsumerKey(), getConsumerSecret(), getUserToken(), getUserSecret());
 
         /* Use the OAuth signed URL */
         curl_easy_setopt(curl, CURLOPT_URL, signedurl);
@@ -172,7 +227,7 @@ struct Memory chunk;
         free(ser_url);
 
         temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, 
-"POST", consumer_key, consumer_secret, user_token, user_secret);
+"POST", getConsumerKey(), getConsumerSecret(), getUserToken(), getUserSecret());
         free(temp_url);
 
         auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);

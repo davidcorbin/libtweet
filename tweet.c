@@ -53,9 +53,6 @@ main(int argc, char **argv)
 
 	curl_global_init(CURL_GLOBAL_ALL);
 	
-	//setConsumerKey("thisisakey");
- 
-	
 	/* No arguments */
 	if (argc == 1) {
 		show_args();
@@ -71,6 +68,27 @@ main(int argc, char **argv)
 		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "verbose") == 0 || strcmp(argv[i], "--verbose") == 0) {
 			verbose = true;
 		}
+	}
+
+	/* Set Twitter consumer key */
+	if (strcmp(argv[1], "setconsumerkey") == 0) {
+		setConsumerKey(argv[2]);
+		exit(0);
+	}
+	/* Set Twitter consumer secret */
+	if (strcmp(argv[1], "setconsumersecret") == 0) {
+		setConsumerSecret(argv[2]);
+		exit(0);
+	}
+	/* Set Twitter user token */
+	if (strcmp(argv[1], "setusertoken") == 0) {
+		setUserToken(argv[2]);
+		exit(0);
+	}
+	/* Set Twitter user secret */
+	if (strcmp(argv[1], "setusersecret") == 0) {
+		setUserSecret(argv[2]);
+		exit(0);
 	}
 	
 	/* If help menu */
