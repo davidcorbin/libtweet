@@ -33,16 +33,21 @@
 #include "http_methods.h"
 #include "oauth.h"
 
-char *dir;
+void
+initDir() {
+        dir = malloc(strlen(strcat(getenv("HOME"), "/.tweet")) + 1);
+        dir = strcat(getenv("HOME"), "/.tweet");
+}
 
 char *tweetdir() {
-	return strcat(getenv("HOME"), "/.tweet");
+        return strcat(getenv("HOME"), "/.tweet");
 }
 
 /*** Functions for getting Twitter credentials from file ***/
 char *
 getConsumerKey() {
 	dir = malloc(strlen(strcat(getenv("HOME"), "/.tweet")) + 1);
+        dir = strcat(getenv("HOME"), "/.tweet");
 	
         char *buff = malloc(50*sizeof(char));
 printf("%s\n", strcat(tweetdir(), "/consumerkey"));
