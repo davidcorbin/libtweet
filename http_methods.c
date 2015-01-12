@@ -36,7 +36,7 @@
 /*** Functions for getting Twitter credentials from file ***/
 char *
 getConsumerKey() {
-        char *buff;
+        char *buff = malloc(50*sizeof(char));
 	FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey"), "r");
 	if (fp == NULL) {
 	 	perror("Read Error:");
@@ -50,7 +50,7 @@ getConsumerKey() {
 }
 char *
 getConsumerSecret() {
-        char *buff;
+        char *buff = malloc(50*sizeof(char));
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumersecret"), "r");
         if (fp == NULL) {
                 perror("Read Error:");
@@ -64,7 +64,7 @@ getConsumerSecret() {
 }
 char *
 getUserToken() {
-        char *buff;
+        char *buff = malloc(50*sizeof(char));
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usertoken"), "r");
         if (fp == NULL) {
                 perror("Read Error:");
@@ -78,7 +78,7 @@ getUserToken() {
 }
 char *
 getUserSecret() {
-        char *buff;
+        char *buff = malloc(50*sizeof(char));
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usersecret"), "r");
         if (fp == NULL) {
                 perror("Read Error:");
@@ -172,7 +172,7 @@ struct Memory chunk;
         /* Init CURL */
         curl = curl_easy_init();
 
-        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", getConsumerKey(), getConsumerSecret(), getUserToken(), getUserSecret());
+        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", (char *)getConsumerKey(), (char *)getConsumerSecret(), (char *)getUserToken(), (char *)getUserSecret());
 
         /* Use the OAuth signed URL */
         curl_easy_setopt(curl, CURLOPT_URL, signedurl);
@@ -211,7 +211,7 @@ post(char *url, char *url_enc_args, bool peerverify)
 
 struct Memory chunk;
 
-        struct curl_slist * slist = NULL;
+        struct curl_slist *slist = NULL;
         char * ser_url, **argv, *auth_params, auth_header[1024], 
 *non_auth_params, *final_url, *temp_url, *postdata;
         int argc;
@@ -227,7 +227,7 @@ struct Memory chunk;
         free(ser_url);
 
         temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, 
-"POST", getConsumerKey(), getConsumerSecret(), getUserToken(), getUserSecret());
+"POST", (char *)getConsumerKey(), (char *)getConsumerSecret(), (char *)getUserToken(), (char *)getUserSecret());
         free(temp_url);
 
         auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);
