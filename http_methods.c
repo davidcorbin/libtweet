@@ -33,10 +33,19 @@
 #include "http_methods.h"
 #include "oauth.h"
 
+char *dir;
+
+char *tweetdir() {
+	return strcat(getenv("HOME"), "/.tweet");
+}
+
 /*** Functions for getting Twitter credentials from file ***/
 char *
 getConsumerKey() {
+	dir = malloc(strlen(strcat(getenv("HOME"), "/.tweet")) + 1);
+	
         char *buff = malloc(50*sizeof(char));
+printf("%s\n", strcat(tweetdir(), "/consumerkey"));
 	FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey"), "r");
 	if (fp == NULL) {
 	 	perror("Read Error:");
@@ -51,6 +60,7 @@ getConsumerKey() {
 char *
 getConsumerSecret() {
         char *buff = malloc(50*sizeof(char));
+printf("%s\n", strcat(tweetdir(), "/consumersecret"));
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumersecret"), "r");
         if (fp == NULL) {
                 perror("Read Error:");
@@ -65,6 +75,7 @@ getConsumerSecret() {
 char *
 getUserToken() {
         char *buff = malloc(50*sizeof(char));
+printf("%s\n", strcat(tweetdir(), "/usertoken"));
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usertoken"), "r");
         if (fp == NULL) {
                 perror("Read Error:");
@@ -79,6 +90,7 @@ getUserToken() {
 char *
 getUserSecret() {
         char *buff = malloc(50*sizeof(char));
+printf("%s\n", strcat(tweetdir(), "/usersecret"));
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usersecret"), "r");
         if (fp == NULL) {
                 perror("Read Error:");
