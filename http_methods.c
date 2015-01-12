@@ -35,25 +35,24 @@
 
 void
 initDir() {
-        dir = realloc(dir, strlen(strcat(getenv("HOME"), "/.tweet")) + 1);
-        dir = getenv("HOME");
+        char *home = getenv("HOME");
+        char *tweet = strcat(home, "/.tweet");
+        mkdir(tweet);
+        dir = realloc(dir, strlen(tweet) + 1);
+        dir = tweet;
 }
 
 /*** Functions for getting Twitter credentials from file ***/
 char *
 getConsumerKey() {
         char *buff = malloc(50*sizeof(char));
-
-printf("%s\n", dir);
-printf("%s\n", strcat(dir, "/consumerkey"));
-
-	FILE *fp = fopen(strcat(dir, "/consumerkey"), "r");
+	FILE *fp = fopen(strcat(dir, "/consumerkey"), "a+");
 	if (fp == NULL) {
 	 	perror("Read Error:");
 	}
         else {
 	        fscanf(fp, "%s", buff);
-	        //printf("%s\n", buff);
+	        printf("consumer key:%s\n", buff);
 	        fclose(fp);
         }
 	return buff;
@@ -61,8 +60,9 @@ printf("%s\n", strcat(dir, "/consumerkey"));
 char *
 getConsumerSecret() {
         char *buff = malloc(50*sizeof(char));
+        printf("%s\n", dir);
 printf("%s\n", strcat(dir, "/consumersecret"));
-        FILE *fp = fopen(strcat(dir, "/consumersecret"), "r");
+        FILE *fp = fopen(strcat(dir, "/consumersecret"), "a+");
         if (fp == NULL) {
                 perror("Read Error:");
         }
@@ -77,7 +77,7 @@ char *
 getUserToken() {
         char *buff = malloc(50*sizeof(char));
 printf("%s\n", strcat(dir, "/usertoken"));
-        FILE *fp = fopen(strcat(dir, "/usertoken"), "r");
+        FILE *fp = fopen(strcat(dir, "/usertoken"), "a+");
         if (fp == NULL) {
                 perror("Read Error:");
         }
@@ -92,7 +92,7 @@ char *
 getUserSecret() {
         char *buff = malloc(50*sizeof(char));
 printf("%s\n", strcat(dir, "/usersecret"));
-        FILE *fp = fopen(strcat(dir, "/usersecret"), "r");
+        FILE *fp = fopen(strcat(dir, "/usersecret"), "a+");
         if (fp == NULL) {
                 perror("Read Error:");
         }

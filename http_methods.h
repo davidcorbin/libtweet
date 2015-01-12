@@ -22,5 +22,5 @@ void setConsumerSecret(char *key);
 void setUserToken(char *key);
 void setUserSecret(char *key);
 
-char *dir;
+const char *dir;
 void initDir();
