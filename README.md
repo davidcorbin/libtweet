@@ -2,13 +2,13 @@ twittercli
 ==========
 As simple as `tweet "#twittercli is awesome!"`
 
-Command line Twitter client built with libcurl, liboauth, and libjson
+Command line Twitter client built on libcurl
 
 
 Install
 ==========
-- Create an app and generate consumer/application keys at apps.twitter.com
-- Install libcurl, liboauth, libjson
+- Create an app and generate consumer/application keys at [apps.twitter.com](apps.twitter.com)
+- Install libcurl (if you don't have it already)
 - Run `make`
 - Run `make install`
 
@@ -16,9 +16,6 @@ Install
 Usage
 ==========
 Post Tweet: `tweet "This is my new status"`
-View Feed: `tweet feed`
-View Home Feed (Your tweets/retweets): `tweet feed home`
-View Trends: `tweet trend`
 
 
 Future Plans
