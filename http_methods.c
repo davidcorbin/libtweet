@@ -29,6 +29,9 @@
 #include <curl/curl.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include "error_desc.h"
 #include "http_methods.h"
 #include "oauth.h"
@@ -37,7 +40,7 @@ void
 initDir() {
         char *home = getenv("HOME");
         char *tweet = strcat(home, "/.tweet");
-        mkdir(tweet);
+        mkdir(tweet, 0775);
         dir = realloc(dir, strlen(tweet) + 1);
         dir = tweet;
 }
@@ -46,7 +49,9 @@ initDir() {
 char *
 getConsumerKey() {
         char *buff = malloc(50*sizeof(char));
-	FILE *fp = fopen(strcat(dir, "/consumerkey"), "a+");
+	//FILE *fp = fopen(strcat(dir, "/consumerkey"), "a+");
+	FILE *fp = fopen("/home_users/pico42553/.tweet/usersecret", "a+");
+
 	if (fp == NULL) {
 	 	perror("Read Error:");
 	}

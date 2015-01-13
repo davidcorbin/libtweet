@@ -209,7 +209,7 @@ void oauth_sign_array2_process (int *argcp, char***argvp,
 	} else {
 		int i;
 		http_request_method = xstrdup(http_method);
-		for (i=0;i<strlen(http_request_method);i++)
+		for (i=0;i<(int)strlen(http_request_method);i++)
 			http_request_method[i]=toupper(http_request_method[i]);
 	}
 
