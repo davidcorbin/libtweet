@@ -282,7 +282,7 @@ void oauth_add_param_to_array(int *argcp, char ***argvp, const char *addparam);
  * @param k key used for signing
  * @return signature string
  */
-char *oauth_sign_plaintext (const char *m, const char *k);
+char *oauth_sign_plaintext (const char *k);
 
 /**
  * url-escape strings and concatenate with '&' separator.

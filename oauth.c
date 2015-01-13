@@ -257,7 +257,7 @@ void oauth_sign_array2_process (int *argcp, char***argvp,
 			sign = oauth_sign_rsa_sha1(odat,okey); // XXX okey needs to be RSA key!
 			break;
 		case OA_PLAINTEXT:
-			sign = oauth_sign_plaintext(odat,okey);
+			sign = oauth_sign_plaintext(okey);
 			break;
 		default:
 			sign = oauth_sign_hmac_sha1(odat,okey);
@@ -595,7 +595,7 @@ void oauth_add_param_to_array(int *argcp, char ***argvp, const char *addparam) {
  * @param k key used for signing
  * @return signature string
  */
-char *oauth_sign_plaintext (const char *m, const char *k) {
+char *oauth_sign_plaintext (const char *k) {
 	return(xstrdup(k));
 }
 
