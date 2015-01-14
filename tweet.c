@@ -53,8 +53,6 @@ main(int argc, char **argv)
 
 	curl_global_init(CURL_GLOBAL_ALL);
 	
-	initDir();
-	
 	/* No arguments */
 	if (argc == 1) {
 		show_args();

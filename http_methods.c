@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2014 David Corbin.
+ * Copyright (c) 2015 David Corbin.
  *
  * This library is free software; 
  * you can redistribute it and/or modify
@@ -31,83 +31,34 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#include <pwd.h>
 
 #include "error_desc.h"
 #include "http_methods.h"
 #include "oauth.h"
 
-void
-initDir() {
-        char *home = getenv("HOME");
-        char *tweet = strcat(home, "/.tweet");
-        mkdir(tweet, 0775);
-        dir = realloc(dir, strlen(tweet) + 1);
-        dir = tweet;
-}
 
-/*** Functions for getting Twitter credentials from file ***/
-char *
-getConsumerKey() {
-        char *buff = malloc(50*sizeof(char));
-	//FILE *fp = fopen(strcat(dir, "/consumerkey"), "a+");
-	FILE *fp = fopen("/home_users/pico42553/.tweet/usersecret", "a+");
 
+char *getKey(char *filename) {
+	char *homedir = getpwuid(getuid())->pw_dir;
+	char *keydir = "/.tweet/";
+	char *tweetdir = malloc((strlen(homedir)*sizeof(char)) + (strlen(keydir)*sizeof(char)) + (strlen(filename)*sizeof(char)) + 1);
+	strcpy(tweetdir, homedir);
+	strcat(tweetdir, keydir);
+	strcat(tweetdir, filename);
+	
+	FILE *fp = fopen(tweetdir, "a+");	
 	if (fp == NULL) {
-	 	perror("Read Error:");
+	 	perror("Error");
 	}
-        else {
-	        fscanf(fp, "%s", buff);
-	        printf("consumer key:%s\n", buff);
-	        fclose(fp);
-        }
+	char *buff = malloc(50);
+    fscanf(fp, "%s", buff);
+    fclose(fp);
+
 	return buff;
 }
-char *
-getConsumerSecret() {
-        char *buff = malloc(50*sizeof(char));
-        printf("%s\n", dir);
-printf("%s\n", strcat(dir, "/consumersecret"));
-        FILE *fp = fopen(strcat(dir, "/consumersecret"), "a+");
-        if (fp == NULL) {
-                perror("Read Error:");
-        }
-        else {
-                fscanf(fp, "%s", buff);
-                //printf("%s\n", buff);
-                fclose(fp);
-        }
-        return buff;
-}
-char *
-getUserToken() {
-        char *buff = malloc(50*sizeof(char));
-printf("%s\n", strcat(dir, "/usertoken"));
-        FILE *fp = fopen(strcat(dir, "/usertoken"), "a+");
-        if (fp == NULL) {
-                perror("Read Error:");
-        }
-        else {
-                fscanf(fp, "%s", buff);
-                //printf("%s\n", buff);
-                fclose(fp);
-        }
-        return buff;
-}
-char *
-getUserSecret() {
-        char *buff = malloc(50*sizeof(char));
-printf("%s\n", strcat(dir, "/usersecret"));
-        FILE *fp = fopen(strcat(dir, "/usersecret"), "a+");
-        if (fp == NULL) {
-                perror("Read Error:");
-        }
-        else {
-                fscanf(fp, "%s", buff);
-                //printf("%s\n", buff);
-                fclose(fp);
-        }
-        return buff;
-}
+
 
 /*** Functions for setting Twitter credentials in file ***/
 void 
@@ -190,7 +141,7 @@ struct Memory chunk;
         /* Init CURL */
         curl = curl_easy_init();
 
-        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", (char *)getConsumerKey(), (char *)getConsumerSecret(), (char *)getUserToken(), (char *)getUserSecret());
+        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", getKey("consumerkey"), getKey("consumersecret"), getKey("usertoken"), getKey("usersecret"));
 
         /* Use the OAuth signed URL */
         curl_easy_setopt(curl, CURLOPT_URL, signedurl);
@@ -245,7 +196,7 @@ struct Memory chunk;
         free(ser_url);
 
         temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, 
-"POST", (char *)getConsumerKey(), (char *)getConsumerSecret(), (char *)getUserToken(), (char *)getUserSecret());
+"POST", getKey("consumerkey"), getKey("consumersecret"), getKey("usertoken"), getKey("usersecret"));
         free(temp_url);
 
         auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);
