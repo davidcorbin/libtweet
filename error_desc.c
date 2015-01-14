@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2014 David Corbin.
+ * Copyright (c) 2015 David Corbin.
  *
  * This library is free software; 
  * you can redistribute it and/or modify
