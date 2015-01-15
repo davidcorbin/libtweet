@@ -121,7 +121,7 @@ int oauth_split_post_paramters(const char *url, char ***argv, short qesc) {
 				fprintf(stderr, "\nliboauth: added trailing slash to URL: '%s'\n\n", token);
 #endif
 				xfree((*argv)[argc]);
-				(*argv)[argc]= (char*) xmalloc(sizeof(char)*(2+strlen(token)));
+				(*argv)[argc]= (char*) malloc(sizeof(char)*(2+strlen(token)));
 				strcpy((*argv)[argc],token);
 				strcat((*argv)[argc],"/");
 			}
