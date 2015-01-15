@@ -9,7 +9,7 @@
  *
  */
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <strings.h>
@@ -21,7 +21,7 @@
 #include <unistd.h>
 
 #include "oauth.h"
-#include "xmalloc.h"
+//#include "xmalloc.h"
 
 #ifndef ISXDIGIT
 # define ISXDIGIT(x) (isxdigit((int) ((unsigned char)x)))
@@ -231,7 +231,7 @@ void oauth_sign_array2_process (int *argcp, char***argvp,
 		if (t_secret) {
 			len += strlen(t_secret);
 		}
-		okey = (char*)xmalloc(len * sizeof(char));
+		okey = (char*)malloc(len * sizeof(char));
 		*okey = '\0';
 		if (c_secret) {
 			okey = strcat(okey, c_secret);
@@ -349,7 +349,7 @@ char *oauth_serialize_url_sep (int argc, int start, char **argv, char *sep, int 
 	int i;
 	int first=1;
 	int seplen=strlen(sep);
-	char *query = (char*) xmalloc(sizeof(char));
+	char *query = (char*) malloc(sizeof(char));
 	*query='\0';
 	for(i=start; i< argc; i++) {
 		int len = 0;
@@ -366,7 +366,7 @@ char *oauth_serialize_url_sep (int argc, int start, char **argv, char *sep, int 
 				*t1='+';
 # else
 				size_t off = t1-tmp;
-				char *t2 = (char*) xmalloc(sizeof(char)*(3+strlen(tmp)));
+				char *t2 = (char*) malloc(sizeof(char)*(3+strlen(tmp)));
 				strcpy(t2, tmp);
 				strcpy(t2+off+2, tmp+off);
 				*(t2+off)='%'; *(t2+off+1)='2'; *(t2+off+2)='0';
@@ -426,7 +426,7 @@ char *oauth_url_unescape(const char *string, size_t *olen) {
 
 	if (!string) return NULL;
 	alloc = strlen(string)+1;
-	ns = (char*) xmalloc(alloc);
+	ns = (char*) malloc(alloc);
 
 	while(--alloc > 0) {
 		in = *string;
@@ -519,7 +519,7 @@ char *oauth_url_escape(const char *string) {
 	alloc = strlen(string)+1;
 	newlen = alloc;
 
-	ns = (char*) xmalloc(alloc);
+	ns = (char*) malloc(alloc);
 
 	length = alloc-1;
 	while(length--) {
@@ -615,7 +615,7 @@ char *oauth_sign_plaintext (const char *k) {
 char *oauth_catenc(int len, ...) {
 	va_list va;
 	int i;
-	char *rv = (char*) xmalloc(sizeof(char));
+	char *rv = (char*) malloc(sizeof(char));
 	*rv='\0';
 	va_start(va, len);
 	for(i=0;i<len;i++) {
@@ -706,7 +706,7 @@ int oauth_decode_base64(unsigned char *dest, const char *src) {
  */
 char *oauth_body_hash_encode(size_t len, unsigned char *digest) {
 	char *sign=oauth_encode_base64(len,digest);
-	char *sig_url = (char*)xmalloc(17+strlen(sign));
+	char *sig_url = (char*)malloc(17+strlen(sign));
 	sprintf(sig_url,"oauth_body_hash=%s", sign);
 	xfree(sign);
 	xfree(digest);
@@ -814,7 +814,7 @@ char *oauth_gen_nonce() {
 			); rndinit=0;} // seed random number generator - FIXME: we can do better ;)
 
 	len=15+floor(rand()*16.0/(double)RAND_MAX);
-	nc = (char*) xmalloc((len+1)*sizeof(char));
+	nc = (char*) malloc((len+1)*sizeof(char));
 	for(i=0;i<len; i++) {
 		nc[i] = chars[ rand() % max ];
 	}
@@ -847,7 +847,7 @@ char *oauth_gen_nonce() {
 	MY_SRAND
 		MY_RAND(&buf, 1);
 	len=15+(((short)buf)&0x0f);
-	nc = (char*) xmalloc((len+1)*sizeof(char));
+	nc = (char*) malloc((len+1)*sizeof(char));
 	for(i=0;i<len; i++) {
 		MY_RAND(&buf, 1);
 		nc[i] = chars[ ((short)buf) % max ];
