@@ -27,6 +27,13 @@
 # define ISXDIGIT(x) (isxdigit((int) ((unsigned char)x)))
 #endif
 
+char *strdup (const char *s) {
+    char *d = malloc (strlen (s) + 1);
+    if (d == NULL) return NULL;
+    strcpy (d,s);
+    return d;
+}
+
 char *oauth_sign_url2 (const char *url, char **postargs,
 		OAuthMethod method,
 		const char *http_method, //< HTTP request method
@@ -665,7 +672,7 @@ int oauth_decode_base64(unsigned char *dest, const char *src) {
 	if(src && *src) {
 		unsigned char *p= dest;
 		int k, l= strlen(src)+1;
-		unsigned char *buf= (unsigned char*) xcalloc(sizeof(unsigned char), l);
+		unsigned char *buf= (unsigned char*) calloc(sizeof(unsigned char), l);
 
 		/* Ignore non base64 chars as per the POSIX standard */
 		for(k=0, l=0; src[k]; k++) {
@@ -727,7 +734,7 @@ char *oauth_encode_base64(int size, const unsigned char *src) {
 
 	if(!src) return NULL;
 	if(!size) size= strlen((char *)src);
-	out= (char*) xcalloc(sizeof(char), size*4/3+4);
+	out= (char*) calloc(sizeof(char), size*4/3+4);
 	p= out;
 
 	for(i=0; i<size; i+=3) {
