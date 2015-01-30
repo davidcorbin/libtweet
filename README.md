@@ -1,5 +1,8 @@
 twittercli
 ==========
+
+[![Build Status](https://travis-ci.org/daconex/twittercli.svg?branch=master)](https://travis-ci.org/daconex/twittercli)
+
 As simple as `tweet "#twittercli is awesome!"`
 
 Command line Twitter client built on libcurl
