@@ -21,13 +21,6 @@
 
 #include "sha1.c" // TODO: sha1.h ; Makefile.am: add sha1.c
 
-char *strdup (const char *s) {
-    char *d = malloc (strlen (s) + 1);
-    if (d == NULL) return NULL;
-    strcpy (d,s);
-    return d;
-}
-
 /* API */
 char *oauth_sign_hmac_sha1_raw (const char *m, const size_t ml, const char *k, const size_t kl) {
 	sha1nfo s;
