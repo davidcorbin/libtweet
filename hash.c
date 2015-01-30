@@ -16,10 +16,17 @@
 #if USE_BUILTIN_HASH // built-in / AVR -- TODO: check license of sha1.c
 #include <stdio.h>
 #include "oauth.h" // oauth_encode_base64
-#include "xmalloc.h"
+#include "malloc.h"
 
 
 #include "sha1.c" // TODO: sha1.h ; Makefile.am: add sha1.c
+
+char *strdup (const char *s) {
+    char *d = malloc (strlen (s) + 1);
+    if (d == NULL) return NULL;
+    strcpy (d,s);
+    return d;
+}
 
 /* API */
 char *oauth_sign_hmac_sha1_raw (const char *m, const size_t ml, const char *k, const size_t kl) {
@@ -49,7 +56,7 @@ char *oauth_body_hash_file(char *filename) {
 	}
 	fclose(F);
 
-	unsigned char *dgst = xmalloc(HASH_LENGTH*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	unsigned char *dgst = malloc(HASH_LENGTH*sizeof(char)); // oauth_body_hash_encode frees the digest..
 	memcpy(dgst, sha1_result(&s), HASH_LENGTH);
 	return oauth_body_hash_encode(HASH_LENGTH, dgst);
 }
@@ -59,14 +66,14 @@ char *oauth_body_hash_data(size_t length, const char *data) {
 	sha1_init(&s);
 	for (;length--;) sha1_writebyte(&s, *data++);
 
-	unsigned char *dgst = xmalloc(HASH_LENGTH*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	unsigned char *dgst = malloc(HASH_LENGTH*sizeof(char)); // oauth_body_hash_encode frees the digest..
 	memcpy(dgst, sha1_result(&s), HASH_LENGTH);
 	return oauth_body_hash_encode(HASH_LENGTH, dgst);
 }
 
 char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 	/* NOT RSA/PK11 support */
-	return xstrdup("---RSA/PK11-is-not-supported-by-this-version-of-liboauth---");
+	return strdup("---RSA/PK11-is-not-supported-by-this-version-of-liboauth---");
 }
 
 int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *sig) {
@@ -80,7 +87,7 @@ int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *sig) {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "xmalloc.h"
+#include "malloc.h"
 #include "oauth.h" // oauth base64 encode fn's.
 
 // NSS includes
@@ -123,7 +130,7 @@ char *oauth_strip_pkcs(const char *txt, const char *h, const char *t) {
 	end--;
 	while (*end=='\r' || *end=='\n') end--;
 	len = end-start+2;
-	rv = xmalloc(len*sizeof(char));
+	rv = malloc(len*sizeof(char));
 	memcpy(rv,start,len);
 	rv[len-1]='\0';
 	return rv;
@@ -208,7 +215,7 @@ char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 looser:
 	if (pkey) SECKEY_DestroyPrivateKey(pkey);
 	if (slot) PK11_FreeSlot(slot);
-	xfree(key);
+	free(key);
 	return rv;
 }
 
@@ -248,7 +255,7 @@ int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *sig) {
 looser:
 	if (pkey) SECKEY_DestroyPublicKey(pkey);
 	if (slot) PK11_FreeSlot(slot);
-	xfree(key);
+	free(key);
 	return rv;
 }
 
@@ -282,7 +289,7 @@ char *oauth_body_hash_file(char *filename) {
 	s = PK11_DigestFinal(context, digest, &len, sizeof digest);
 	if (s != SECSuccess) goto looser;
 
-	dgst = xmalloc(len*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	dgst = malloc(len*sizeof(char)); // oauth_body_hash_encode frees the digest..
 	memcpy(dgst, digest, len);
 	rv=oauth_body_hash_encode(len, dgst);
 
@@ -315,7 +322,7 @@ char *oauth_body_hash_data(size_t length, const char *data) {
 	s = PK11_DigestFinal(context, digest, &len, sizeof digest);
 	if (s != SECSuccess) goto looser;
 
-	unsigned char *dgst = xmalloc(len*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	unsigned char *dgst = malloc(len*sizeof(char)); // oauth_body_hash_encode frees the digest..
 	memcpy(dgst, digest, len);
 	rv=oauth_body_hash_encode(len, dgst);
 
@@ -348,7 +355,7 @@ looser:
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "xmalloc.h"
+#include "malloc.h"
 #include "oauth.h" // base64 encode fn's.
 #include <openssl/hmac.h>
 
@@ -386,11 +393,11 @@ char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 
 	if (pkey == NULL) {
 		//fprintf(stderr, "liboauth/OpenSSL: can not read private key\n");
-		return xstrdup("liboauth/OpenSSL: can not read private key");
+		return strdup("liboauth/OpenSSL: can not read private key");
 	}
 
 	len = EVP_PKEY_size(pkey);
-	sig = (unsigned char*)xmalloc((len+1)*sizeof(char));
+	sig = (unsigned char*)malloc((len+1)*sizeof(char));
 
 	EVP_SignInit(&md_ctx, EVP_sha1());
 	EVP_SignUpdate(&md_ctx, m, strlen(m));
@@ -402,7 +409,7 @@ char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 		EVP_PKEY_free(pkey);
 		return tmp;
 	}
-	return xstrdup("liboauth/OpenSSL: rsa-sha1 signing failed");
+	return strdup("liboauth/OpenSSL: rsa-sha1 signing failed");
 }
 
 int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *s) {
@@ -427,7 +434,7 @@ int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *s) {
 		return -2;
 	}
 
-	b64d= (unsigned char*) xmalloc(sizeof(char)*strlen(s));
+	b64d= (unsigned char*) malloc(sizeof(char)*strlen(s));
 	slen = oauth_decode_base64(b64d, s);
 
 	EVP_VerifyInit(&md_ctx, EVP_sha1());
@@ -435,7 +442,7 @@ int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *s) {
 	err = EVP_VerifyFinal(&md_ctx, b64d, slen, pkey);
 	EVP_MD_CTX_cleanup(&md_ctx);
 	EVP_PKEY_free(pkey);
-	xfree(b64d);
+	free(b64d);
 	return (err);
 }
 
@@ -458,7 +465,7 @@ char *oauth_body_hash_file(char *filename) {
 	}
 	fclose(F);
 	len=0;
-	md=(unsigned char*) xcalloc(EVP_MD_size(EVP_sha1()),sizeof(unsigned char));
+	md=(unsigned char*) calloc(EVP_MD_size(EVP_sha1()),sizeof(unsigned char));
 	EVP_DigestFinal(&ctx, md,(unsigned int*) &len);
 	EVP_MD_CTX_cleanup(&ctx);
 	return oauth_body_hash_encode(len, md);
@@ -468,7 +475,7 @@ char *oauth_body_hash_data(size_t length, const char *data) {
 	EVP_MD_CTX ctx;
 	size_t len=0;
 	unsigned char *md;
-	md=(unsigned char*) xcalloc(EVP_MD_size(EVP_sha1()),sizeof(unsigned char));
+	md=(unsigned char*) calloc(EVP_MD_size(EVP_sha1()),sizeof(unsigned char));
 	EVP_MD_CTX_init(&ctx);
 	EVP_DigestInit(&ctx,EVP_sha1());
 	EVP_DigestUpdate(&ctx, data, length);

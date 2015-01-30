@@ -27,13 +27,6 @@
 # define ISXDIGIT(x) (isxdigit((int) ((unsigned char)x)))
 #endif
 
-char *strdup (const char *s) {
-    char *d = malloc (strlen (s) + 1);
-    if (d == NULL) return NULL;
-    strcpy (d,s);
-    return d;
-}
-
 char *oauth_sign_url2 (const char *url, char **postargs,
 		OAuthMethod method,
 		const char *http_method, //< HTTP request method
