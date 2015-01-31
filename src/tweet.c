@@ -18,6 +18,7 @@
 #include "tweet.h"
 #include "http_methods.h"
 #include "oauth.h"
+#include "keys.h"
 
 /* Show command arguments */
 void 

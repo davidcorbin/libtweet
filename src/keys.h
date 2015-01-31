@@ -9,10 +9,9 @@
  *
  */
 
-extern struct Memory {
-        char *memory;
-        size_t size;
-} chunk;
+char *getKey(char *filename);
 
-struct Memory post(char *url, char *url_enc_args, bool peerverify);
-struct Memory get(char *url, bool peerverify);
+void setConsumerKey(char *key);
+void setConsumerSecret(char *key);
+void setUserToken(char *key);
+void setUserSecret(char *key);
