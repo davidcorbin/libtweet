@@ -58,8 +58,7 @@ write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 /* Show home feed */
-struct Memory 
-get(char *url) 
+struct Memory get(char *url) 
 {
 
         CURL *curl;
@@ -100,8 +99,7 @@ return chunk;
 }
 
 
-struct Memory
-post(char *url, char *url_enc_args)
+struct Memory post(char *url, char *url_enc_args)
 {
         CURL *curl;
         CURLcode res;

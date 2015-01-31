@@ -21,15 +21,14 @@
 #include "keys.h"
 
 /* Show command arguments */
-void 
-show_args() 
+void show_args() 
 {
-	printf("Arguments to 'tweet' <-- need done \n");
-	exit(1);
+	const char* args = "Arguments to 'tweet' <-- need done \n";
+	printf("%s", args);
+	exit(0);
 }
 
-int 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	struct Memory chunk;
 

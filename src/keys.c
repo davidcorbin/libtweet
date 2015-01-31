@@ -45,8 +45,7 @@ char *getKey(char *filename) {
 
 
 /*** Functions for setting Twitter credentials in file ***/
-void 
-setConsumerKey(char *key) {
+void setConsumerKey(char *key) {
 	FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumerkey"), "w");
 	if (fp == NULL) {
 		perror("Write Error:");
@@ -57,8 +56,7 @@ setConsumerKey(char *key) {
 	}
 }
 
-void 
-setConsumerSecret(char *key) {
+void setConsumerSecret(char *key) {
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumersecret"), "w");
         if (fp == NULL) {
                 perror("Write Error:");
@@ -69,8 +67,7 @@ setConsumerSecret(char *key) {
         }
 }
 
-void 
-setUserToken(char *key) {
+void setUserToken(char *key) {
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usertoken"), "w");
 	if (fp == NULL) {
                 perror("Write Error:");
@@ -81,8 +78,7 @@ setUserToken(char *key) {
         }
 }
 
-void 
-setUserSecret(char *key) {
+void setUserSecret(char *key) {
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usersecret"), "w");
 	if (fp == NULL) {
                 perror("Write Error:");

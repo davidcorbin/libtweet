@@ -9,8 +9,7 @@
  *
  */
 
-char *
-unescape(char *escaped, int len) 
+char *unescape(char *escaped, int len) 
 {
 	char *unescaped = malloc(len * sizeof(char));
 	int j = 0, test = 0;
