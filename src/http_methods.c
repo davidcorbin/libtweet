@@ -34,7 +34,6 @@
 #include <unistd.h>
 #include <pwd.h>
 
-#include "error_desc.h"
 #include "http_methods.h"
 #include "oauth.h"
 #include "keys.h"
@@ -91,7 +90,6 @@ struct Memory chunk;
         /* Show Error */
         if(res != CURLE_OK) {
                 fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
-                error_desc((int)res);
                 exit(2);
         }
 
@@ -165,8 +163,7 @@ struct Memory chunk;
 
         if (res != CURLE_OK) {
                 fprintf(stderr, "Failed: %s\n", curl_easy_strerror(res));
-                error_desc((int)res);
-                exit(2);
+                exit(1);
         }
 
         curl_easy_cleanup(curl);
