@@ -3,7 +3,7 @@ TARGET = tweet
 CC = gcc
 CFLAGS = -g -std=c99 -Wall -Wextra
 LFLAGS = -lcurl -lcrypto -lm
-OBJECTS = tweet.c http_methods.c error_desc.c oauth.c hash.c
+OBJECTS = src/tweet.c src/http_methods.c src/error_desc.c src/oauth.c src/hash.c
 PREFIXDIR = $(DESTDIR)/usr
 BINDIR = $(PREFIXDIR)/bin
 
