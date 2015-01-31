@@ -17,20 +17,10 @@
 #include <stdlib.h>
 #endif
 
-#ifndef _STDBOOL_H_
-#include <stdbool.h>
-#endif
-
 #ifndef _STRING_H_
 #include <string.h>
 #endif
 
-#ifndef __CURL_CURL_H
-#include <curl/curl.h>
-#endif
-
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <pwd.h>
 
@@ -66,6 +56,7 @@ setConsumerKey(char *key) {
 		fclose(fp);
 	}
 }
+
 void 
 setConsumerSecret(char *key) {
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/consumersecret"), "w");
@@ -77,6 +68,7 @@ setConsumerSecret(char *key) {
                 fclose(fp);
         }
 }
+
 void 
 setUserToken(char *key) {
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usertoken"), "w");
@@ -88,6 +80,7 @@ setUserToken(char *key) {
                 fclose(fp);
         }
 }
+
 void 
 setUserSecret(char *key) {
         FILE *fp = fopen(strcat(getenv("HOME"), "/.tweet/usersecret"), "w");
