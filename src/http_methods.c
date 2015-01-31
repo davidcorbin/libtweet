@@ -60,7 +60,7 @@ write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)
 
 /* Show home feed */
 struct Memory 
-get(char *url, bool peerverify) 
+get(char *url) 
 {
 
         CURL *curl;
@@ -78,9 +78,6 @@ struct Memory chunk;
 
         /* Use the OAuth signed URL */
         curl_easy_setopt(curl, CURLOPT_URL, signedurl);
-
-        if (!peerverify) 
-                curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
         /* Add response to memory */
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_memory_callback);
@@ -106,7 +103,7 @@ return chunk;
 
 
 struct Memory
-post(char *url, char *url_enc_args, bool peerverify)
+post(char *url, char *url_enc_args)
 {
         CURL *curl;
         CURLcode res;
@@ -152,9 +149,6 @@ struct Memory chunk;
         free(argv);
 
         curl = curl_easy_init();
-
-        if (peerverify == false) 
-                curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
         curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);

@@ -28,25 +28,6 @@ show_args()
 	exit(1);
 }
 
-char *
-unescape(char *escaped, int len) 
-{
-	char *unescaped = malloc(len * sizeof(char));
-	int j = 0, test = 0;
-	char backslash[1] = "\\";
-	for (int i = 0; i < len; i++) {
-		if (escaped[i] == backslash[0]) {
-			test++;
-			continue;
-		} else {
-			unescaped[j] = escaped[i];
-			j++;
-		}
-	}
-	return unescaped;
-}
-
-
 int 
 main(int argc, char **argv)
 {
@@ -60,11 +41,6 @@ main(int argc, char **argv)
 	}
 
 	for (int i = 1; i < argc; i++) {
-		/* Disable peer verification */
-		if (strcmp(argv[i], "--no-verify-peer") == 0) {
-			peerverify = false;
-		}
-
 		/* Print verbosely */
 		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "verbose") == 0 || strcmp(argv[i], "--verbose") == 0) {
 			verbose = true;
@@ -98,7 +74,7 @@ main(int argc, char **argv)
 	}
 	
 	else if (strcmp(argv[1], "feed") == 0) {
-		chunk = get(home_feed_url, peerverify);
+		chunk = get(home_feed_url);
 
 //chunk.memory = unescape(chunk.memory, (int)chunk.size);
 
@@ -113,7 +89,7 @@ printf("%s\n", chunk.memory);
 
 		strcpy(status_string, s);
 		strcat(status_string, argv[1]);
-		chunk = post(tweet_url, oauth_url_escape(status_string), peerverify);
+		chunk = post(tweet_url, oauth_url_escape(status_string));
 		free(status_string);
 
 printf("%s\n", chunk.memory);
