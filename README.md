@@ -28,6 +28,7 @@ Setup
 - Run `tweet setconsumersecret <CONSUMER SECRET>`
 - Run `tweet setusertoken <USER TOKEN>`
 - Run `tweet setusersecret <USER SECRET>`
+- Run `tweet "#twittercli is awesome">`
 
 
 Future Plans

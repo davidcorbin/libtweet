@@ -23,7 +23,9 @@
 /* Show command arguments */
 void show_args() 
 {
-	const char* args = "Arguments to 'tweet' <-- need done \n";
+	const char* args = 
+		"usage: tweet []\n"
+		"  tweet \"#twittercli is awesome!\"\n";
 	printf("%s", args);
 	exit(0);
 }
