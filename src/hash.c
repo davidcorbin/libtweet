@@ -16,7 +16,6 @@
 #if USE_BUILTIN_HASH // built-in / AVR -- TODO: check license of sha1.c
 #include <stdio.h>
 #include "oauth.h" // oauth_encode_base64
-#include "malloc.h"
 
 
 #include "sha1.c" // TODO: sha1.h ; Makefile.am: add sha1.c
@@ -80,7 +79,6 @@ int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *sig) {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "malloc.h"
 #include "oauth.h" // oauth base64 encode fn's.
 
 // NSS includes
@@ -348,7 +346,6 @@ looser:
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "malloc.h"
 #include "oauth.h" // base64 encode fn's.
 #include <openssl/hmac.h>
 
