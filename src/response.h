@@ -8,3 +8,5 @@
  * See COPYING for details.
  *
  */
+
+char *get_tweet(char *key, char *twitter_resp);

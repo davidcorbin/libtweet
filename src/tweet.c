@@ -19,6 +19,7 @@
 #include "http_methods.h"
 #include "oauth.h"
 #include "keys.h"
+#include "response.h"
 
 /* Show command arguments */
 void show_args() 
@@ -77,13 +78,13 @@ int main(int argc, char **argv)
 	else if (strcmp(argv[1], "feed") == 0) {
 		chunk = get(home_feed_url);
 
-//chunk.memory = unescape(chunk.memory, (int)chunk.size);
+		//chunk.memory = unescape(chunk.memory, (int)chunk.size);
 
-printf("%s\n", chunk.memory);
+		printf("%s\n", chunk.memory);
 
 	}
 	
-	/* No correct args */
+	/* Post tweet */
 	else {
 		char *status_string = malloc(7 + strlen(argv[1]) + 1);
 		char *s = "status=";
@@ -93,8 +94,7 @@ printf("%s\n", chunk.memory);
 		chunk = post(tweet_url, oauth_url_escape(status_string));
 		free(status_string);
 
-printf("%s\n", chunk.memory);
-
+		printf("Created at %s\n", get_tweet("created_at", chunk.memory));
 	}
 
 	/* Done */

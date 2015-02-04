@@ -9,19 +9,24 @@
  *
  */
 
-char *unescape(char *escaped, int len) 
-{
-	char *unescaped = malloc(len * sizeof(char));
-	int j = 0, test = 0;
-	char backslash[1] = "\\";
-	for (int i = 0; i < len; i++) {
-		if (escaped[i] == backslash[0]) {
-			test++;
-			continue;
-		} else {
-			unescaped[j] = escaped[i];
-			j++;
-		}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *get_tweet(char *key, char *twitter_resp) {
+	char *key_pt = strstr(twitter_resp, key);
+	if (key_pt == NULL) {
+		return NULL;
 	}
-	return unescaped;
+	
+	char *head = strstr(key_pt, ":\"") + 2;
+	char *tail = strchr(head, '\"');
+	if (tail == NULL) {
+		printf("Error in Twitter response. Try again.\n");
+		exit(1);
+	}
+	
+	char *buff = malloc((tail-head) * sizeof(char) + 1);
+	strncpy(buff, head, tail-head);
+	return buff;
 }
