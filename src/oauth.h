@@ -12,13 +12,12 @@
 /** \enum OAuthMethod
  * signature method to used for signing the request.
  */
- 
 #ifndef OAUTH_METHOD
 #define OAUTH_METHOD
 typedef enum {
-    OA_HMAC=0, ///< use HMAC-SHA1 request signing method
-    OA_RSA, ///< use RSA signature
-    OA_PLAINTEXT ///< use plain text signature (for testing only)
+    OA_HMAC=0, // use HMAC-SHA1 request signing method
+    OA_RSA, // use RSA signature
+    OA_PLAINTEXT // use plain text signature
  } OAuthMethod;
 #endif
 

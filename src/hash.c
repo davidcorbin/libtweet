@@ -371,7 +371,7 @@ char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 
 	if (pkey == NULL) {
 		//fprintf(stderr, "OpenSSL: can not read private key\n");
-		return strdup("liboauth/OpenSSL: can not read private key");
+		return strdup("OpenSSL: can not read private key");
 	}
 
 	len = EVP_PKEY_size(pkey);

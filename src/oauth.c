@@ -124,7 +124,7 @@ int oauth_split_post_paramters(const char *url, char ***argv, short qesc) {
 #endif
 			if (slash && !strchr(slash,'/')) {
 #ifdef DEBUG_OAUTH
-				fprintf(stderr, "\nliboauth: added trailing slash to URL: '%s'\n\n", token);
+				fprintf(stderr, "\nadded trailing slash to URL: '%s'\n\n", token);
 #endif
 				free((*argv)[argc]);
 				(*argv)[argc]= (char*) malloc(sizeof(char)*(2+strlen(token)));
@@ -253,8 +253,8 @@ void oauth_sign_array2_process (int *argcp, char***argvp,
 	free(http_request_method);
 
 #ifdef DEBUG_OAUTH
-	fprintf (stderr, "\nliboauth: data to sign='%s'\n\n", odat);
-	fprintf (stderr, "\nliboauth: key='%s'\n\n", okey);
+	fprintf (stderr, "\ndata to sign='%s'\n\n", odat);
+	fprintf (stderr, "\nkey='%s'\n\n", okey);
 #endif
 
 	// generate signature
@@ -804,7 +804,7 @@ int oauth_b64_is_base64(char c) {
  * @return zero terminated random string.
  */
 #if !defined HAVE_OPENSSL_HMAC_H && !defined USE_NSS
-/* pre liboauth-0.7.2 and possible future versions that don't use OpenSSL or NSS */
+
 char *oauth_gen_nonce() {
 	char *nc;
 	static int rndinit = 1;
