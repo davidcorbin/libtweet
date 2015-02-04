@@ -9,16 +9,11 @@
  *
  */
 
-#if HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #if USE_BUILTIN_HASH // built-in / AVR -- TODO: check license of sha1.c
+
 #include <stdio.h>
+
 #include "oauth.h" // oauth_encode_base64
-
-
-#include "sha1.c" // TODO: sha1.h ; Makefile.am: add sha1.c
 
 /* API */
 char *oauth_sign_hmac_sha1_raw (const char *m, const size_t ml, const char *k, const size_t kl) {
@@ -48,7 +43,7 @@ char *oauth_body_hash_file(char *filename) {
 	}
 	fclose(F);
 
-	unsigned char *dgst = malloc(HASH_LENGTH*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	unsigned char *dgst = malloc(HASH_LENGTH*sizeof(char));
 	memcpy(dgst, sha1_result(&s), HASH_LENGTH);
 	return oauth_body_hash_encode(HASH_LENGTH, dgst);
 }
@@ -58,28 +53,27 @@ char *oauth_body_hash_data(size_t length, const char *data) {
 	sha1_init(&s);
 	for (;length--;) sha1_writebyte(&s, *data++);
 
-	unsigned char *dgst = malloc(HASH_LENGTH*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	unsigned char *dgst = malloc(HASH_LENGTH*sizeof(char));
 	memcpy(dgst, sha1_result(&s), HASH_LENGTH);
 	return oauth_body_hash_encode(HASH_LENGTH, dgst);
 }
 
 char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 	/* NOT RSA/PK11 support */
-	return strdup("---RSA/PK11-is-not-supported-by-this-version-of-liboauth---");
+	return strdup("---RSA/PK11-is-not-supported---");
 }
 
 int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *sig) {
 	/* NOT RSA/PK11 support */
-	return -1; // mismatch , error
+	return -1; // mismatch error
 }
 
 #elif defined (USE_NSS)
-/* use http://www.mozilla.org/projects/security/pki/nss/ for hash/sign */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "oauth.h" // oauth base64 encode fn's.
+#include "oauth.h" // oauth base64 encode functions
 
 // NSS includes
 #include "pk11pub.h"
@@ -105,12 +99,6 @@ void oauth_init_nss() {
 	if (!nss_initialized) { NSS_NoDB_Init(NULL); nss_initialized=1;}
 }
 
-/**
- * Removes heading & trailing strings; used only internally.
- * similar to NSS-source/nss/lib/pkcs7/certread.c
- *
- * the returned string (if not NULL) needs to be freed by the caller
- */
 char *oauth_strip_pkcs(const char *txt, const char *h, const char *t) {
 	char *start, *end, *rv;
 	size_t len;
@@ -136,7 +124,7 @@ char *oauth_sign_hmac_sha1_raw (const char *m, const size_t ml, const char *k, c
 	PK11SlotInfo  *slot = NULL;
 	PK11SymKey    *pkey = NULL;
 	PK11Context   *context = NULL;
-	unsigned char  digest[20]; // Is there a way to tell how large the output is?
+	unsigned char  digest[20];
 	unsigned int   len;
 	SECStatus      s;
 	SECItem        keyItem, noParams;
@@ -253,7 +241,7 @@ looser:
 char *oauth_body_hash_file(char *filename) {
 	PK11SlotInfo  *slot = NULL;
 	PK11Context   *context = NULL;
-	unsigned char  digest[20]; // Is there a way to tell how large the output is?
+	unsigned char  digest[20]; 
 	unsigned int   len;
 	SECStatus      s;
 	char          *rv=NULL;
@@ -280,7 +268,7 @@ char *oauth_body_hash_file(char *filename) {
 	s = PK11_DigestFinal(context, digest, &len, sizeof digest);
 	if (s != SECSuccess) goto looser;
 
-	dgst = malloc(len*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	dgst = malloc(len*sizeof(char));
 	memcpy(dgst, digest, len);
 	rv=oauth_body_hash_encode(len, dgst);
 
@@ -294,7 +282,7 @@ looser:
 char *oauth_body_hash_data(size_t length, const char *data) {
 	PK11SlotInfo  *slot = NULL;
 	PK11Context   *context = NULL;
-	unsigned char  digest[20]; // Is there a way to tell how large the output is?
+	unsigned char  digest[20];
 	unsigned int   len;
 	SECStatus      s;
 	char          *rv=NULL;
@@ -313,7 +301,7 @@ char *oauth_body_hash_data(size_t length, const char *data) {
 	s = PK11_DigestFinal(context, digest, &len, sizeof digest);
 	if (s != SECSuccess) goto looser;
 
-	unsigned char *dgst = malloc(len*sizeof(char)); // oauth_body_hash_encode frees the digest..
+	unsigned char *dgst = malloc(len*sizeof(char));
 	memcpy(dgst, digest, len);
 	rv=oauth_body_hash_encode(len, dgst);
 
@@ -382,7 +370,7 @@ char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 	BIO_free(in);
 
 	if (pkey == NULL) {
-		//fprintf(stderr, "liboauth/OpenSSL: can not read private key\n");
+		//fprintf(stderr, "OpenSSL: can not read private key\n");
 		return strdup("liboauth/OpenSSL: can not read private key");
 	}
 
@@ -399,7 +387,7 @@ char *oauth_sign_rsa_sha1 (const char *m, const char *k) {
 		EVP_PKEY_free(pkey);
 		return tmp;
 	}
-	return strdup("liboauth/OpenSSL: rsa-sha1 signing failed");
+	return strdup("OpenSSL: rsa-sha1 signing failed");
 }
 
 int oauth_verify_rsa_sha1 (const char *m, const char *c, const char *s) {
@@ -475,5 +463,3 @@ char *oauth_body_hash_data(size_t length, const char *data) {
 }
 
 #endif
-
-// vi: sts=2 sw=2 ts=2
