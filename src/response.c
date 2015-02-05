@@ -13,8 +13,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *get_tweet(char *key, char *twitter_resp) {
-	char *key_pt = strstr(twitter_resp, key);
+char *get_tweet_val(char *key, char *twitter_resp) {
+	char *quote_key = calloc( (1 + strlen(key))*sizeof(char) + 1, sizeof(char) );
+	strncpy(quote_key, "\"", 1);
+	strcat(quote_key, key);
+
+	char *key_pt = strstr(twitter_resp, quote_key);
 	if (key_pt == NULL) {
 		return NULL;
 	}
@@ -22,12 +26,12 @@ char *get_tweet(char *key, char *twitter_resp) {
 	char *head = strstr(key_pt, ":\"") + 2;
 	char *tail = strchr(head, '\"');
 	if (tail == NULL) {
-		printf("Error in Twitter response. Try again.\n");
+		printf("Error in Twitter response json. Try again.\n");
 		exit(1);
 	}
 	
-	char *buff = malloc((tail-head) * sizeof(char) + 1);
-	strncpy(buff, head, tail-head);
+	char *buff = calloc( (tail-head) * sizeof(char) + 1, sizeof(char) );
+	memcpy(buff, head, tail-head);
 	return buff;
 }
 

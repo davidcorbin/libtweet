@@ -9,6 +9,6 @@
  *
  */
 
-char *get_tweet(char *key, char *twitter_resp);
+char *get_tweet_val(char *key, char *twitter_resp);
 
 void unescape(char *str, char garbage);

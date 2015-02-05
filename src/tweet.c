@@ -77,15 +77,18 @@ int main(int argc, char **argv)
 	
 	else if (strcmp(argv[1], "feed") == 0) {
 		chunk = get(home_feed_url);
-
-		//chunk.memory = unescape(chunk.memory, (int)chunk.size);
-
+		unescape(chunk.memory, '\\');
+		
 		printf("%s\n", chunk.memory);
-
 	}
 	
 	/* Post tweet */
 	else {
+		/* Check if more than 140 chars */
+		if (strlen(argv[1]) > 140) {
+			printf("A tweet can't be more than 140 characters");
+			exit(1);
+		}
 		char *status_string = malloc(7 + strlen(argv[1]) + 1);
 		char *s = "status=";
 
@@ -95,8 +98,12 @@ int main(int argc, char **argv)
 		free(status_string);
 
 		unescape(chunk.memory, '\\');
-		//printf("Created at %s\n", get_tweet("created_at", chunk.memory));
-		printf("%s", chunk.memory);
+		
+		printf("%s (%s)\n", get_tweet_val("screen_name", chunk.memory), get_tweet_val("name", chunk.memory));
+		printf("    %s\n", get_tweet_val("text", chunk.memory));
+		
+		//printf("    %s\n", get_tweet("text", chunk.memory));
+		//printf("%s", chunk.memory);
 	}
 
 	/* Done */
