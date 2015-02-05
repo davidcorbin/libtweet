@@ -10,3 +10,5 @@
  */
 
 char *get_tweet(char *key, char *twitter_resp);
+
+void unescape(char *str, char garbage);

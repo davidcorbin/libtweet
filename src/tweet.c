@@ -94,7 +94,9 @@ int main(int argc, char **argv)
 		chunk = post(tweet_url, oauth_url_escape(status_string));
 		free(status_string);
 
-		printf("Created at %s\n", get_tweet("created_at", chunk.memory));
+		unescape(chunk.memory, '\\');
+		//printf("Created at %s\n", get_tweet("created_at", chunk.memory));
+		printf("%s", chunk.memory);
 	}
 
 	/* Done */

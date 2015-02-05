@@ -30,3 +30,13 @@ char *get_tweet(char *key, char *twitter_resp) {
 	strncpy(buff, head, tail-head);
 	return buff;
 }
+
+
+void unescape(char *str, char rem) {
+	char *src, *dst;
+	for (src = dst = str; *src != '\0'; src++) {
+		*dst = *src;
+		if (*dst != rem) dst++;
+	}
+	*dst = '\0';
+}
