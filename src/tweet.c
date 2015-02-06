@@ -16,7 +16,7 @@
 #include <curl/curl.h>
 
 #include "tweet.h"
-#include "http_methods.h"
+#include "http.h"
 #include "oauth.h"
 #include "keys.h"
 #include "response.h"

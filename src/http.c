@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <pwd.h>
 
-#include "http_methods.h"
+#include "http.h"
 #include "oauth.h"
 #include "keys.h"
 
