@@ -25,7 +25,7 @@
 void show_args() 
 {
 	const char* args = 
-		"usage: tweet []\n"
+		"usage: tweet \"#twittercli is awesome\"\n"
 		"  tweet \"#twittercli is awesome!\"\n";
 	printf("%s", args);
 	exit(0);
@@ -79,7 +79,9 @@ int main(int argc, char **argv)
 		chunk = get(home_feed_url);
 		unescape(chunk.memory, '\\');
 		
-		printf("%s\n", chunk.memory);
+		feed(chunk.memory);
+		
+		//printf("%s\n", chunk.memory);
 	}
 	
 	/* Post tweet */
@@ -99,11 +101,8 @@ int main(int argc, char **argv)
 
 		unescape(chunk.memory, '\\');
 		
-		printf("%s (%s)\n", get_tweet_val("screen_name", chunk.memory), get_tweet_val("name", chunk.memory));
-		printf("    %s\n", get_tweet_val("text", chunk.memory));
-		
-		//printf("    %s\n", get_tweet("text", chunk.memory));
-		//printf("%s", chunk.memory);
+		printf("%s (@%s)\n", get_tweet_val("screen_name", chunk.memory), get_tweet_val("name", chunk.memory));
+		printf("   %s\n", get_tweet_val("text", chunk.memory));
 	}
 
 	/* Done */

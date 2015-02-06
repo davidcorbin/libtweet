@@ -9,12 +9,3 @@
  *
  */
 
-extern struct Tweet {
-        char *memory;
-        size_t size;
-};
-
-char *get_tweet_val(char *key, char *twitter_resp);
-char *feed(char *twitter_resp);
-
-void unescape(char *str, char garbage);

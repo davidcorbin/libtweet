@@ -74,8 +74,13 @@ struct Memory chunk;
 
         char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", getKey("consumerkey"), getKey("consumersecret"), getKey("usertoken"), getKey("usersecret"));
 
+char *signedurl2 = malloc( (strlen(signedurl)+8)*sizeof(char)+ 1);
+strcpy(signedurl2, signedurl);
+strcat(signedurl2, "&count=1");
+printf("%s\n", signedurl2);
+
         /* Use the OAuth signed URL */
-        curl_easy_setopt(curl, CURLOPT_URL, signedurl);
+        curl_easy_setopt(curl, CURLOPT_URL, signedurl2);
 
         /* Add response to memory */
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_memory_callback);
@@ -93,7 +98,7 @@ struct Memory chunk;
         }
 
         /* Don't leave a mess */
-        curl_easy_cleanup(curl);
+curl_easy_cleanup(curl);
 
 return chunk;
 }

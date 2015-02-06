@@ -13,6 +13,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+char *feed(char *twitter_resp) {
+	char *ptr = twitter_resp;
+	int bracket_count = 0, tweet_count = 0;
+	while (*ptr) {
+		if (strncmp (ptr,"{",1) == 0) bracket_count++;
+		if (strncmp (ptr,"}",1) == 0) bracket_count--;
+		ptr++;
+		
+		if (bracket_count == 0)
+			tweet_count++;
+	}
+	printf("%i\n", tweet_count);
+	//printf("%s\n", twitter_resp);
+
+	//printf("%s\n", twitter_resp);
+	return twitter_resp;
+}
+
 char *get_tweet_val(char *key, char *twitter_resp) {
 	char *quote_key = calloc( (1 + strlen(key))*sizeof(char) + 1, sizeof(char) );
 	strncpy(quote_key, "\"", 1);
@@ -34,7 +52,6 @@ char *get_tweet_val(char *key, char *twitter_resp) {
 	memcpy(buff, head, tail-head);
 	return buff;
 }
-
 
 void unescape(char *str, char rem) {
 	char *src, *dst;
