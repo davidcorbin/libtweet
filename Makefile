@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 TARGET = tweet
 CC = gcc
-CFLAGS = -g -std=c99 -Wall -Wextra
+CFLAGS = -g -std=c99 -Wall -pedantic -Wextra
 LFLAGS = -lcurl -lcrypto -lm
 OBJECTS = src/*.c
 PREFIXDIR = $(DESTDIR)/usr

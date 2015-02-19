@@ -9,10 +9,12 @@
  *
  */
 
-extern struct Tweet {
+struct Tweet {
         char *memory;
         size_t size;
 };
+
+typedef struct Tweet tweet;
 
 char *get_tweet_val(char *key, char *twitter_resp);
 char *feed(char *twitter_resp);

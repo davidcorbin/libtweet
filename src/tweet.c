@@ -20,6 +20,7 @@
 #include "oauth.h"
 #include "keys.h"
 #include "response.h"
+#include "api.h"
 
 /* Show command arguments */
 void show_args() 
@@ -41,6 +42,8 @@ int main(int argc, char **argv)
 	if (argc == 1) {
 		show_args();
 	}
+	
+	TWITTER_AUTH *user = twitter_auth_init("user", "aaaaa", "bbbbbb", "ccccccc");
 
 	for (int i = 1; i < argc; i++) {
 		/* Print verbosely */
@@ -86,11 +89,7 @@ int main(int argc, char **argv)
 	
 	/* Post tweet */
 	else {
-		/* Check if more than 140 chars */
-		if (strlen(argv[1]) > 140) {
-			printf("A tweet can't be more than 140 characters");
-			exit(1);
-		}
+
 		char *status_string = malloc(7 + strlen(argv[1]) + 1);
 		char *s = "status=";
 
