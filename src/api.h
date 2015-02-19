@@ -12,17 +12,15 @@
 #ifndef _TWITTERCLI_H_
 #define _TWITTERCLI_H_
 
-int update_status(char *status);
+#define UPDATE_URL "https://api.twitter.com/1.1/statuses/update.json"
+#define HOME_TIMELINE_URL "https://api.twitter.com/1.1/statuses/home_timeline.json"
 
-typedef struct {
-	char *consumer_key;
-	char *consumer_secret;
-	char *access_token;
-	char *access_secret;
-} TWITTER_AUTH;
-
-//typedef struct auth *twitter_auth;
+typedef struct auth TWITTER_AUTH;
 
 TWITTER_AUTH * twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret);
+
+void twitter_auth_free(TWITTER_AUTH *auth);
+
+int update_status(TWITTER_AUTH *auth, char *status);
 
 #endif

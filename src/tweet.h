@@ -7,9 +7,20 @@
  * it under the terms of the MIT license. 
  * See COPYING for details.
  *
- */ 
+ */
 
-bool verbose = false;
+#ifndef _TWITTERCLI_H_
+#define _TWITTERCLI_H_
 
-char *tweet_url = "https://api.twitter.com/1.1/statuses/update.json";
-char *home_feed_url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
+#define UPDATE_URL "https://api.twitter.com/1.1/statuses/update.json"
+#define HOME_TIMELINE_URL "https://api.twitter.com/1.1/statuses/home_timeline.json"
+
+typedef struct auth TWITTER_AUTH;
+
+TWITTER_AUTH * twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret);
+
+void twitter_auth_free(TWITTER_AUTH *auth);
+
+int update_status(TWITTER_AUTH *auth, char *status);
+
+#endif

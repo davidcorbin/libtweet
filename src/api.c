@@ -14,7 +14,15 @@
 #include <string.h>
 
 #include "api.h"
+#include "http.h"
+#include "oauth.h"
 
+struct auth {
+	char *consumer_key;
+	char *consumer_secret;
+	char *access_token;
+	char *access_secret;
+};
 
 TWITTER_AUTH *twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret) {
 
@@ -66,41 +74,27 @@ TWITTER_AUTH *twitter_auth_init(char *consumer_key, char *consumer_secret, char 
 	return auth;
 }
 
-
-/*
-void delVector (struct Vector *vector) {
-    // Can safely assume vector is NULL or fully built.
-
-    if (vector != NULL) {
-        free (vector->data);
-        free (vector);
-    }
+void twitter_auth_free(TWITTER_AUTH *auth) {
+	if (auth != NULL) {
+        	free (auth->consumer_key);
+		free (auth->consumer_secret);
+		free (auth->access_token);
+		free (auth->access_secret);
+        	free (auth);
+	}
 }
-*/
 
-/*
-void xyz_print_data(xyz_key_type handle) {
-    struct xyz_private_data *data = (struct xyz_private_data*)handle;
-    printf("x :%d, y: %d, z: %d\n", data->x, data->y, data->z);
-}
-void xyz_close(xyz_key_type handle) {
-    free(data);
-}
-*/
-
-/*
-int update_status(char *status) {
+int update_status(TWITTER_AUTH *auth, char *status) {
 	// Check if more than 140 chars 
 	if (strlen(status) > 140) {
 		printf("A tweet can't be more than 140 characters");
 		return -1;
 	}
 	
-	char *status_string = malloc(7 + strlen(argv[1]) + 1);
+	char *status_string = malloc(7 + strlen(status) + 1);
 	char *s = "status=";
 	strcpy(status_string, s);
-	strcat(status_string, argv[1]);
-	chunk = post(tweet_url, oauth_url_escape(status_string));
+	strcat(status_string, status);
+	//char *resp = post(UPDATE_URL, oauth_url_escape(status_string));
 	free(status_string);
 }
-*/
