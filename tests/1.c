@@ -5,6 +5,6 @@
 
 int main(void) {
 	TWITTER_AUTH *user = twitter_auth_init("aaa", "ggvhhg", "iggffg", "jgcfghfffd");
-	printf("aaa\n");
+	printf("aaaa\n");
 	return 0;
 }

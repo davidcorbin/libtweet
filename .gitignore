@@ -1,2 +1,5 @@
 tweet
 tweet.dSYM
+*.a
+*.so
+*.o

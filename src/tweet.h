@@ -16,11 +16,12 @@
 #define HOME_TIMELINE_URL "https://api.twitter.com/1.1/statuses/home_timeline.json"
 
 typedef struct auth TWITTER_AUTH;
+typedef struct tweet TWEET;
 
 TWITTER_AUTH * twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret);
 
 void twitter_auth_free(TWITTER_AUTH *auth);
 
-int update_status(TWITTER_AUTH *auth, char *status);
+int update_status(TWITTER_AUTH *auth, TWEET *object, char *status);
 
 #endif

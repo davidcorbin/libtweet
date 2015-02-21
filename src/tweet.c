@@ -24,6 +24,10 @@ struct auth {
 	char *access_secret;
 };
 
+struct tweet {
+	char *resp;
+};
+
 TWITTER_AUTH *twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret) {
 
 	// Try to allocate struct
@@ -84,7 +88,7 @@ void twitter_auth_free(TWITTER_AUTH *auth) {
 	}
 }
 
-int update_status(TWITTER_AUTH *auth, char *status) {
+int update_status(TWITTER_AUTH *auth, TWEET *object, char *status) {
 	// Check if more than 140 chars 
 	if (strlen(status) > 140) {
 		printf("A tweet can't be more than 140 characters");
@@ -95,6 +99,7 @@ int update_status(TWITTER_AUTH *auth, char *status) {
 	char *s = "status=";
 	strcpy(status_string, s);
 	strcat(status_string, status);
-	//char *resp = post(UPDATE_URL, oauth_url_escape(status_string));
+	object->resp = post(UPDATE_URL, oauth_url_escape(status_string), auth->consumer_key, auth->consumer_secret, auth->access_token, auth->access_secret);
 	free(status_string);
+	return 0;
 }

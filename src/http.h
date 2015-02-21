@@ -14,5 +14,6 @@ extern struct Memory {
         size_t size;
 } chunk;
 
-struct Memory post(char *url, char *url_enc_args);
-struct Memory get(char *url);
+char *get(char *url, char *consumer_key, char *consumer_secret, char *access_token, char *access_secret);
+
+char *post(char *url, char *url_enc_args, char *consumer_key, char *consumer_secret, char *access_token, char *access_secret);

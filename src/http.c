@@ -36,7 +36,6 @@
 
 #include "http.h"
 #include "oauth.h"
-#include "keys.h"
 
 /* CURL response callback */
 static size_t
@@ -58,13 +57,12 @@ write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 /* Show home feed */
-struct Memory get(char *url) 
-{
+char *get(char *url, char *consumer_key, char *consumer_secret, char *access_token, char *access_secret) {
 
         CURL *curl;
         CURLcode res;
 
-struct Memory chunk;
+	struct Memory chunk;
 
         chunk.memory = malloc(1); // Will be reallocated
         chunk.size = 0; // Nothing currently
@@ -72,7 +70,7 @@ struct Memory chunk;
         /* Init CURL */
         curl = curl_easy_init();
 
-        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", getKey("consumerkey"), getKey("consumersecret"), getKey("usertoken"), getKey("usersecret"));
+        char *signedurl = oauth_sign_url2(url, NULL, OA_HMAC, "GET", consumer_key, consumer_secret, access_token, access_secret);
 
 char *signedurl2 = malloc( (strlen(signedurl)+8)*sizeof(char)+ 1);
 strcpy(signedurl2, signedurl);
@@ -98,18 +96,18 @@ printf("%s\n", signedurl2);
         }
 
         /* Don't leave a mess */
-curl_easy_cleanup(curl);
+	curl_easy_cleanup(curl);
 
-return chunk;
+	return chunk.memory;
 }
 
 
-struct Memory post(char *url, char *url_enc_args)
+char *post(char *url, char *url_enc_args, char *consumer_key, char *consumer_secret, char *access_token, char *access_secret)
 {
         CURL *curl;
         CURLcode res;
 
-struct Memory chunk;
+	struct Memory chunk;
 
         struct curl_slist *slist = NULL;
         char * ser_url, **argv, *auth_params, auth_header[1024], 
@@ -127,7 +125,7 @@ struct Memory chunk;
         free(ser_url);
 
         temp_url = oauth_sign_array2(&argc, &argv, NULL, OA_HMAC, 
-"POST", getKey("consumerkey"), getKey("consumersecret"), getKey("usertoken"), getKey("usersecret"));
+"POST", consumer_key, consumer_secret, access_token, access_secret);
         free(temp_url);
 
         auth_params = oauth_serialize_url_sep(argc, 1, argv, ", ", 6);
@@ -171,5 +169,5 @@ struct Memory chunk;
 
         curl_easy_cleanup(curl);
 
-return chunk;
+	return chunk.memory;
 }
