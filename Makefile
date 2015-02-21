@@ -12,7 +12,7 @@ all:
 	$(CC) $(CFLAGS) $(SOURCE) $(LFLAGS) 
 	$(CC) -shared -o $(TARGET) *.o
 	ar rcs libtweet.a $(OBJECTS)
-	cd tests/ && $(CC) -c *.c && $(CC) 1.o -L../ -ltweet $(LFLAGS) -lgcc
+	cd tests/ && $(CC) -c *.c && $(CC) simple.o keys.o -L../ -ltweet $(LFLAGS)
 
 install:
 	install $(TARGET) $(BINDIR)

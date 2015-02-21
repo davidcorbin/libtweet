@@ -1,9 +1,9 @@
-twittercli
+libtweet
 ==========
 
 [![Build Status](https://travis-ci.org/daconex/twittercli.svg?branch=master)](https://travis-ci.org/daconex/twittercli)
 
-As simple as `tweet "#twittercli is awesome!"`
+As simple as `tweet "#libtweet is awesome!"`
 
 Command line Twitter client built on libcurl
 
@@ -28,11 +28,10 @@ Setup
 - Run `tweet setconsumersecret <CONSUMER SECRET>`
 - Run `tweet setusertoken <USER TOKEN>`
 - Run `tweet setusersecret <USER SECRET>`
-- Run `tweet "#twittercli is awesome">`
+- Run `tweet "#libtweet is awesome">`
 
 
 Future Plans
 ==========
-- libtweet: a Twitter interface for your apps
 - tweet daemon: background process for getting mentions/direct messages and alerting you
 - Confirming support for more platforms

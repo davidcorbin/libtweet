@@ -88,6 +88,15 @@ void twitter_auth_free(TWITTER_AUTH *auth) {
 	}
 }
 
+
+
+TWEET *tweet_init() {
+	TWEET *tweet = malloc(sizeof(TWEET));
+	return tweet;
+}
+
+
+
 int update_status(TWITTER_AUTH *auth, TWEET *object, char *status) {
 	// Check if more than 140 chars 
 	if (strlen(status) > 140) {

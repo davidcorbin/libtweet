@@ -22,6 +22,8 @@ TWITTER_AUTH * twitter_auth_init(char *consumer_key, char *consumer_secret, char
 
 void twitter_auth_free(TWITTER_AUTH *auth);
 
+TWEET *tweet_init();
+
 int update_status(TWITTER_AUTH *auth, TWEET *object, char *status);
 
 #endif
