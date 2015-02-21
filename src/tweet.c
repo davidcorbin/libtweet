@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "api.h"
+#include "tweet.h"
 #include "http.h"
 #include "oauth.h"
 

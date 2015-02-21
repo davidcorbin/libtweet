@@ -1,18 +1,23 @@
+TARGET = libtweet.so
 SHELL = /bin/sh
-TARGET = tweet
 CC = gcc
-CFLAGS = -g -std=c99 -Wall -pedantic -Wextra
+CFLAGS = -g -std=c99 -Wall -pedantic -Wextra -c -fPIC 
 LFLAGS = -lcurl -lcrypto -lm
-OBJECTS = src/*.c
+OBJECTS = *.o
+SOURCE = src/*.c
 PREFIXDIR = $(DESTDIR)/usr
 BINDIR = $(PREFIXDIR)/bin
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) $(LFLAGS) -o $(TARGET) 
+all: 
+	$(CC) $(CFLAGS) $(SOURCE) $(LFLAGS) 
+	$(CC) -shared -o $(TARGET) *.o
+	ar rcs libtweet.a $(OBJECTS)
+	ranlib *.a
+	gcc -static tests/1.o -L. -ltweet -lcurl -lm -lcrypto
 
 install:
 	install $(TARGET) $(BINDIR)
 	
 clean:
-	rm *.o
-	rm *.gch
+	rm -r *.o
+	rm -r *.gch
