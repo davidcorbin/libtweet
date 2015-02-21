@@ -12,8 +12,7 @@ all:
 	$(CC) $(CFLAGS) $(SOURCE) $(LFLAGS) 
 	$(CC) -shared -o $(TARGET) *.o
 	ar rcs libtweet.a $(OBJECTS)
-	ranlib *.a
-	gcc -static tests/1.o -L. -ltweet -lcurl -lm -lcrypto
+	cd tests/ && $(CC) -c *.c && $(CC) -static 1.o -L../ -ltweet $(LFLAGS)
 
 install:
 	install $(TARGET) $(BINDIR)
