@@ -101,7 +101,7 @@ TWEET *tweet_update_status(TWEET_AUTH *auth, TWEET *tweet, char *status) {
 	char *s = "status=";
 	strcpy(status_string, s);
 	strcat(status_string, status);
-	tweet->resp = post(UPDATE_URL, oauth_url_escape(status_string), auth->consumer_key, auth->consumer_secret, auth->access_token, auth->access_secret);
+	tweet->resp = post(TWEET_UPDATE_URL, oauth_url_escape(status_string), auth->consumer_key, auth->consumer_secret, auth->access_token, auth->access_secret);
 	unescape(tweet->resp, '\\');
 	free(status_string);
 	return tweet;

@@ -12,8 +12,8 @@
 #ifndef _LIBTWEET_H_
 #define _LIBTWEET_H_
 
-#define UPDATE_URL "https://api.twitter.com/1.1/statuses/update.json"
-#define HOME_TIMELINE_URL "https://api.twitter.com/1.1/statuses/home_timeline.json"
+#define TWEET_UPDATE_URL "https://api.twitter.com/1.1/statuses/update.json"
+#define TWEETHOME_TIMELINE_URL "https://api.twitter.com/1.1/statuses/home_timeline.json"
 
 typedef struct auth TWEET_AUTH;
 typedef struct tweet TWEET;
