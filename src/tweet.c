@@ -16,6 +16,7 @@
 #include "tweet.h"
 #include "http.h"
 #include "oauth.h"
+#include "response.h"
 
 struct auth {
 	char *consumer_key;
@@ -24,14 +25,10 @@ struct auth {
 	char *access_secret;
 };
 
-struct tweet {
-	char *resp;
-};
-
-TWITTER_AUTH *twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret) {
+TWEET_AUTH *tweet_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret) {
 
 	// Try to allocate struct
-	TWITTER_AUTH *auth = malloc(sizeof(TWITTER_AUTH));
+	TWEET_AUTH *auth = malloc(sizeof(TWEET_AUTH));
 	if (auth == NULL) {
 		printf("Failed to allocate auth\n");
 		exit(-1);
@@ -78,7 +75,7 @@ TWITTER_AUTH *twitter_auth_init(char *consumer_key, char *consumer_secret, char 
 	return auth;
 }
 
-void twitter_auth_free(TWITTER_AUTH *auth) {
+void tweet_auth_free(TWEET_AUTH *auth) {
 	if (auth != NULL) {
         	free (auth->consumer_key);
 		free (auth->consumer_secret);
@@ -90,25 +87,26 @@ void twitter_auth_free(TWITTER_AUTH *auth) {
 
 
 
+struct tweet {
+	char *resp;
+};
+
 TWEET *tweet_init() {
 	TWEET *tweet = malloc(sizeof(TWEET));
 	return tweet;
 }
 
-
-
-int update_status(TWITTER_AUTH *auth, TWEET *object, char *status) {
-	// Check if more than 140 chars 
-	if (strlen(status) > 140) {
-		printf("A tweet can't be more than 140 characters");
-		return -1;
-	}
-	
+TWEET *tweet_update_status(TWEET_AUTH *auth, TWEET *tweet, char *status) {
 	char *status_string = malloc(7 + strlen(status) + 1);
 	char *s = "status=";
 	strcpy(status_string, s);
 	strcat(status_string, status);
-	object->resp = post(UPDATE_URL, oauth_url_escape(status_string), auth->consumer_key, auth->consumer_secret, auth->access_token, auth->access_secret);
+	tweet->resp = post(UPDATE_URL, oauth_url_escape(status_string), auth->consumer_key, auth->consumer_secret, auth->access_token, auth->access_secret);
+	unescape(tweet->resp, '\\');
 	free(status_string);
-	return 0;
+	return tweet;
+}
+
+char *tweet_val(char *key, TWEET *tweet) {
+	return get_tweet_val(key, tweet->resp);
 }

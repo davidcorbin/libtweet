@@ -9,21 +9,23 @@
  *
  */
 
-#ifndef _TWITTERCLI_H_
-#define _TWITTERCLI_H_
+#ifndef _LIBTWEET_H_
+#define _LIBTWEET_H_
 
 #define UPDATE_URL "https://api.twitter.com/1.1/statuses/update.json"
 #define HOME_TIMELINE_URL "https://api.twitter.com/1.1/statuses/home_timeline.json"
 
-typedef struct auth TWITTER_AUTH;
+typedef struct auth TWEET_AUTH;
 typedef struct tweet TWEET;
 
-TWITTER_AUTH * twitter_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret);
+TWEET_AUTH * tweet_auth_init(char *consumer_key, char *consumer_secret, char *access_token , char *access_secret);
 
-void twitter_auth_free(TWITTER_AUTH *auth);
+void tweet_auth_free(TWEET_AUTH *auth);
 
 TWEET *tweet_init();
 
-int update_status(TWITTER_AUTH *auth, TWEET *object, char *status);
+TWEET *tweet_update_status(TWEET_AUTH *auth, TWEET *object, char *status);
+
+char *tweet_val(char *key, TWEET *tweet);
 
 #endif
