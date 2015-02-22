@@ -1,7 +1,7 @@
 libtweet
 ==========
 
-[![Build Status](https://travis-ci.org/daconex/twittercli.svg?branch=master)](https://travis-ci.org/daconex/twittercli)
+[![Build Status](https://travis-ci.org/daconex/libtweet.svg?branch=master)](https://travis-ci.org/daconex/libtweet)
 
 As simple as `tweet "#libtweet is awesome!"`
 
