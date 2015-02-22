@@ -9,7 +9,7 @@ PREFIXDIR = $(DESTDIR)/usr
 BINDIR = $(PREFIXDIR)/bin
 
 all: 
-	cd objects/ && $(CC) $(CFLAGS) ../$(SOURCE) $(LFLAGS) 
+	cd objects && $(CC) $(CFLAGS) ../$(SOURCE) $(LFLAGS) 
 	$(CC) -shared -o $(TARGET) $(OBJECTS)
 	ar rcs libtweet.a $(OBJECTS)
 	cd tests/ && $(CC) -c *.c && $(CC) simple.o keys.o -L../ -ltweet $(LFLAGS) -o simple
