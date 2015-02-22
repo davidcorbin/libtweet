@@ -23,9 +23,9 @@ TWEET_AUTH * tweet_auth_init(char *consumer_key, char *consumer_secret, char *ac
 void tweet_auth_free(TWEET_AUTH *auth);
 
 TWEET *tweet_init();
-
 TWEET *tweet_update_status(TWEET_AUTH *auth, TWEET *object, char *status);
 
+char *tweet_full_resp(TWEET *tweet);
 char *tweet_val(char *key, TWEET *tweet);
 
 #endif

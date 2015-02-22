@@ -110,3 +110,7 @@ TWEET *tweet_update_status(TWEET_AUTH *auth, TWEET *tweet, char *status) {
 char *tweet_val(char *key, TWEET *tweet) {
 	return get_tweet_val(key, tweet->resp);
 }
+
+char *tweet_full_resp(TWEET *tweet) {
+	return tweet->resp;
+}
